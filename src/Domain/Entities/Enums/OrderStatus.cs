@@ -5,11 +5,12 @@ namespace Domain.Entities.Enums
 	public enum OrderStatus
 	{
 		None = 0,
-		Received = 1,
-		Preparing = 2,
+		Creating = 1,
+		Received = 2,
+		Preparing = 3,
 		[Description("Order Soon")]
-		OrderSoon = 3,
-		Finished = 4
+		OrderSoon = 4,
+		Finished = 5
 
 	}
 }
