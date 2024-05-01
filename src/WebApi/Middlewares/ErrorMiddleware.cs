@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 
-namespace Api.Middlewares;
+namespace WebApi.Middlewares;
 
 [ExcludeFromCodeCoverage]
 public class ErrorMiddleware

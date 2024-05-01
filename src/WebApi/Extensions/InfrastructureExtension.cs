@@ -2,7 +2,7 @@
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 
-namespace Api.Extensions;
+namespace WebApi.Extensions;
 
 internal static class InfrastructureExtension
 {
