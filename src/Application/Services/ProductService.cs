@@ -6,7 +6,7 @@ using Domain.Repositories;
 
 namespace Application.Services;
 
-internal class ProductService : IProductService
+public class ProductService : IProductService
 {
 	public IProductRepository _productRepository { get; set; }
 	public ProductService(IProductRepository productRepository)
