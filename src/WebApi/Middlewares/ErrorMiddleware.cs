@@ -1,4 +1,5 @@
-﻿using Domain.Entities.Exceptions;
+using Domain.Entities.Exceptions;
+using Domain.Entities.OrderAggregate.Exceptions;
 using Domain.ValueObjects.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
@@ -33,7 +34,11 @@ public class ErrorMiddleware
         when (exception
         is InvalidEmailException
         or InvalidCpfException
-        or EntityArgumentNullException)
+        or EntityArgumentNullException
+		or EntityArgumentEnumInvalidException
+		or EntityArgumentNumberInvalidException
+		or ChangeOrderStatusToReceivedException
+		)
         {
             _logger.LogWarning(exception, exception.Message);
 
