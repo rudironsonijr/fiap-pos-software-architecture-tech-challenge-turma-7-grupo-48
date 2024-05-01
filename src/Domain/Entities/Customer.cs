@@ -1,8 +1,9 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Entities.Helpers;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Customer : EntityValidation
+public class Customer
 {
     public int Id { get; init; }
 
@@ -11,7 +12,7 @@ public class Customer : EntityValidation
         get => _name; 
         init 
         { 
-            FailIfNullOrWhiteSpace(value, nameof(Name));
+            EntityValidation.FailIfNullOrWhiteSpace(value, nameof(Name));
             _name = value;
         } 
     }
@@ -22,7 +23,7 @@ public class Customer : EntityValidation
         get => _email;
         init
         {
-            FailIfNull(value, nameof(Email));
+            EntityValidation.FailIfNull(value, nameof(Email));
             _email = value;
         }
     }
@@ -33,7 +34,7 @@ public class Customer : EntityValidation
         get => _cpf;
         init
         {
-            FailIfNull(value, nameof(Email));
+            EntityValidation.FailIfNull(value, nameof(Email));
             _cpf = value;
         }
     }
