@@ -1,52 +1,41 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Entities.Helpers;
+using Domain.ValueObjects;
 
 namespace Domain.Entities;
 
-public class Customer : EntityValidation
+public class Customer
 {
-	private readonly Cpf _cpf;
+    public int Id { get; init; }
 
-	private readonly Email _email;
+    private string _name = string.Empty;
+    public required string Name { 
+        get => _name; 
+        init 
+        { 
+            EntityValidation.FailIfNullOrWhiteSpace(value, nameof(Name));
+            _name = value;
+        } 
+    }
 
-	private readonly string _name = string.Empty;
-	public int Id { get; init; }
+    private Email _email;
+    public required Email Email
+    {
+        get => _email;
+        init
+        {
+            EntityValidation.FailIfNull(value, nameof(Email));
+            _email = value;
+        }
+    }
 
-	public required string Name
-	{
-		get => _name;
-		init
-		{
-			FailIfNullOrWhiteSpace(
-				value: value,
-				propertyName: nameof(Name)
-			);
-			_name = value;
-		}
-	}
-
-	public required Email Email
-	{
-		get => _email;
-		init
-		{
-			FailIfNull(
-				value: value,
-				propertyName: nameof(Email)
-			);
-			_email = value;
-		}
-	}
-
-	public required Cpf Cpf
-	{
-		get => _cpf;
-		init
-		{
-			FailIfNull(
-				value: value,
-				propertyName: nameof(Email)
-			);
-			_cpf = value;
-		}
-	}
+    private Cpf _cpf;
+    public required Cpf Cpf
+    {
+        get => _cpf;
+        init
+        {
+            EntityValidation.FailIfNull(value, nameof(Email));
+            _cpf = value;
+        }
+    }
 }
