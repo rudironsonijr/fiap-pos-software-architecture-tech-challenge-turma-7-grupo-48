@@ -23,11 +23,18 @@ namespace Domain.Entities.Exceptions
 
 		}
 
-		public static void ThrowIfLessOrEqualThan(decimal minimalValue, decimal compareValue, string propertyName, string entityName)
+		public static void ThrowIfLessOrEqualThan(decimal minimalValue, 
+			decimal compareValue, 
+			string propertyName, 
+			Type entityType)
 		{
 			if(compareValue <= minimalValue)
 			{
-				throw new EntityArgumentNumberInvalidException(DefaultNumberInvalidLessMessageTemplate, propertyName, minimalValue, entityName);
+				throw new EntityArgumentNumberInvalidException(
+					DefaultNumberInvalidLessMessageTemplate, 
+					propertyName, 
+					minimalValue, 
+					entityType.ToString());
 			}
 		}
 

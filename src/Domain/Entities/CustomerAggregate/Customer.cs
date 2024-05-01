@@ -13,7 +13,11 @@ public class Customer
 		get => _name;
 		init
 		{
-			EntityValidation.FailIfNullOrWhiteSpace(value, nameof(Name));
+			EntityValidation.FailIfNullOrWhiteSpace(
+				value, 
+				nameof(Name), 
+				GetType());
+
 			_name = value;
 		}
 	}
@@ -24,7 +28,11 @@ public class Customer
 		get => _email;
 		init
 		{
-			EntityValidation.FailIfNull(value, nameof(Email));
+			EntityValidation.FailIfNull(
+				value, 
+				nameof(Email), 
+				GetType());
+
 			_email = value;
 		}
 	}
@@ -35,7 +43,11 @@ public class Customer
 		get => _cpf;
 		init
 		{
-			EntityValidation.FailIfNull(value, nameof(Email));
+			EntityValidation.FailIfNull(
+				value, 
+				nameof(Email), 
+				GetType());
+
 			_cpf = value;
 		}
 	}

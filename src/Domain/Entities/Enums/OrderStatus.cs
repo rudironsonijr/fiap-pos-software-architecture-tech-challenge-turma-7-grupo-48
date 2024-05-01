@@ -10,5 +10,4 @@ public enum OrderStatus
 	[Description("Order Soon")]
 	OrderSoon = 4,
 	Finished = 5
-
 }

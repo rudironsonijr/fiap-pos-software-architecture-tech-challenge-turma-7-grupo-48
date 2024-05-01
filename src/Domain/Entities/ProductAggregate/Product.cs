@@ -13,7 +13,11 @@ public class Product
 		get => _name;
 		init
 		{
-			EntityValidation.FailIfNullOrWhiteSpace(value, nameof(Name));
+			EntityValidation.FailIfNullOrWhiteSpace(
+				value, 
+				nameof(Name), 
+				GetType());
+
 			_name = value;
 		}
 	}
@@ -24,7 +28,11 @@ public class Product
 		get => _description;
 		set
 		{
-			EntityValidation.FailIfNullOrWhiteSpace(value, nameof(Description));
+			EntityValidation.FailIfNullOrWhiteSpace(
+				value, 
+				nameof(Description), 
+				GetType());
+
 			_description = value;
 		}
 	}
@@ -50,11 +58,10 @@ public class Product
 		get => _price;
 		set
 		{
-			EntityArgumentNumberInvalidException.ThrowIfLessOrEqualThan(
-				0,
-				value,
-				ProductType.None.ToString(),
-				GetType().ToString());
+			EntityValidation.FailIfLessOrEqualZero(
+				value, 
+				nameof(Price), 
+				GetType());	
 
 			_price = value;
 		}

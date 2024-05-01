@@ -21,11 +21,7 @@ namespace Domain.Entities.OrderAggregate
 		public decimal Price { 
 			get 
 			{
-				decimal total = 0;
-				foreach (var item in _orderProducts)
-				{
-					total += item.Price;
-				}
+				decimal total = _orderProducts.Sum(x => x.Price);
 				return Math.Round(total, 2);
 			} 
 		}

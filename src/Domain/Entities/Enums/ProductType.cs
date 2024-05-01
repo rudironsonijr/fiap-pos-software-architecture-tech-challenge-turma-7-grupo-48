@@ -10,6 +10,5 @@ namespace Domain.Entities.Enums
 		SideDish = 2,
 		Snack = 3,
 		Dessert = 4
-
 	}
 }

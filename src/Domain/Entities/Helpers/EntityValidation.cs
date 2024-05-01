@@ -1,35 +1,45 @@
-﻿using Domain.Entities.Exceptions;
+using Domain.Entities.Exceptions;
 
 namespace Domain.Entities.Helpers
 {
 	internal static class EntityValidation
 	{
-		public static void FailIfNull(object? value, string propertyName)
+		public static void FailIfNull(object? value, string propertyName, Type entityType)
 		{
 			EntityArgumentNullException.ThrowIfPropertyNull(
-				valid: value is null,
-				propertyName: propertyName,
-				entityType: value?.GetType()
+				value is null,
+				propertyName,
+				entityType
 			);
 		}
 
-		public static void FailIfNullOrWhiteSpace(string? value, string propertyName)
+		public static void FailIfNullOrWhiteSpace(string? value, string propertyName, Type entityType)
 		{
 			EntityArgumentNullException.ThrowIfPropertyNull(
-				valid: string.IsNullOrWhiteSpace(value: value),
-				propertyName: propertyName,
-				entityType: value?.GetType()
+				string.IsNullOrWhiteSpace(value),
+				propertyName,
+				entityType
 			);
 		}
 
-		public static void FailIfNullOrEmpty<T>(IEnumerable<T>? value, string propertyName)
+		public static void FailIfNullOrEmpty<T>(IEnumerable<T>? value, string propertyName, Type entityType)
 		{
 			var isNullOrEmpty = value is null || !propertyName.Any();
 			EntityArgumentNullException.ThrowIfPropertyNull(
-				valid: isNullOrEmpty,
-				propertyName: propertyName,
-				entityType: value?.GetType()
+				isNullOrEmpty,
+				propertyName,
+				entityType
 			);
+		}
+
+		public static void FailIfLessOrEqualZero(decimal value,  string propertyName, Type entityType)
+		{
+			EntityArgumentNumberInvalidException.ThrowIfLessOrEqualThan(
+					0, 
+					value,
+					propertyName,
+					entityType
+				);
 		}
 	}
 }
