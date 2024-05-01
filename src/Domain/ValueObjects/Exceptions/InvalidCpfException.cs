@@ -1,10 +1,13 @@
 ﻿namespace Domain.ValueObjects.Exceptions;
 
-public class InvalidCpfException : Exception
+public class InvalidCpfException(
+	string number
+) : Exception(
+	message: string.Format(
+		format: DefaultInvalidEmailMessageTemplate,
+		arg0: number
+	)
+)
 {
-    const string DEFAULT_INVALID_EMAIL_MESSAGE_TEMPLATE = "The CPF number {0} is invalid";
-    public InvalidCpfException(string number) : base(string.Format(DEFAULT_INVALID_EMAIL_MESSAGE_TEMPLATE, number))
-    {
-
-    }
+	private const string DefaultInvalidEmailMessageTemplate = "The CPF number {0} is invalid";
 }

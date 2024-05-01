@@ -1,11 +1,13 @@
 ﻿namespace Domain.ValueObjects.Exceptions;
 
-public class InvalidEmailException : Exception
+public class InvalidEmailException(
+	string address
+) : Exception(
+	message: string.Format(
+		format: DefaultInvalidEmailMessageTemplate,
+		arg0: address
+	)
+)
 {
-    const string DEFAULT_INVALID_EMAIL_MESSAGE_TEMPLATE = "The Email Adress {0} is invalid";
-
-    public InvalidEmailException(string Adress) : base(string.Format(DEFAULT_INVALID_EMAIL_MESSAGE_TEMPLATE, Adress))
-    {
-        
-    }
+	private const string DefaultInvalidEmailMessageTemplate = "The Email Address {0} is invalid";
 }

@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Controllers
-{
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CustomerController : ControllerBase
-    {
-    }
-}
+namespace WebApi.Controllers;
+
+[Route(template: "api/[controller]")]
+[ApiController]
+public class CustomerController : ControllerBase { }

@@ -1,66 +1,98 @@
 ﻿namespace Domain.ValueObjects;
+
 public struct Cpf
 {
-    public Cpf(string number)
-    {
-        if(IsValidCpf(number) is false)
-        {
+	public Cpf(string number)
+	{
+		if (!IsValidCpf(number: number))
+		{
+			throw new ArgumentException(
+				message: "Invalid CPF",
+				paramName: nameof(number)
+			);
+		}
 
-        }
+		Number = number;
+	}
 
-        Number = number;
-    }
-    public string Number { get; } 
+	public string Number { get; }
 
-    public string FormatedNumber 
-    { 
-        get => Convert.ToUInt64(Number).ToString(@"000\.000\.000\-00"); 
-    }
+	public string FormatedNumber => Convert.ToUInt64(value: Number)
+		.ToString(format: @"000\.000\.000\-00");
 
-    public static implicit operator Cpf(string number) => new Cpf(number);
+	public static implicit operator Cpf(string number)
+	{
+		return new Cpf(number: number);
+	}
 
-    public static implicit operator string(Cpf number) => number.FormatedNumber;
+	public static implicit operator string(Cpf number)
+	{
+		return number.FormatedNumber;
+	}
 
-    public static bool IsValidCpf(string number)
-    {
-        int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
-        int[] multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
+	public static bool IsValidCpf(string number)
+	{
+		int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+		int[] multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
 
-        number = number.Trim().Replace(".", "").Replace("-", "");
-        if (number.Length != 11)
-            return false;
+		number = number.Trim()
+			.Replace(
+				oldValue: ".",
+				newValue: ""
+			)
+			.Replace(
+				oldValue: "-",
+				newValue: ""
+			);
+		if (number.Length != 11)
+			return false;
 
-        for (int j = 0; j < 10; j++)
-            if (j.ToString().PadLeft(11, char.Parse(j.ToString())) == number)
-                return false;
+		for (var j = 0; j < 10; j++)
+			if (j.ToString()
+				    .PadLeft(
+					    totalWidth: 11,
+					    paddingChar: char.Parse(s: j.ToString())
+				    ) ==
+			    number)
+				return false;
 
-        string hasCpf = number.Substring(0, 9);
-        int sum = 0;
+		var hasCpf = number.Substring(
+			startIndex: 0,
+			length: 9
+		);
+		var sum = 0;
 
-        for (int i = 0; i < 9; i++)
-            sum += int.Parse(hasCpf[i].ToString()) * multiplier1[i];
+		for (var i = 0; i < 9; i++)
+			sum += int.Parse(
+				       s: hasCpf[index: i]
+					       .ToString()
+			       ) *
+			       multiplier1[i];
 
-        int remainder = sum % 11;
-        if (remainder < 2)
-            remainder = 0;
-        else
-            remainder = 11 - remainder;
+		var remainder = sum % 11;
+		if (remainder < 2)
+			remainder = 0;
+		else
+			remainder = 11 - remainder;
 
-        string digit = remainder.ToString();
-        hasCpf = hasCpf + digit;
-        sum = 0;
-        for (int i = 0; i < 10; i++)
-            sum += int.Parse(hasCpf[i].ToString()) * multiplier2[i];
+		var digit = remainder.ToString();
+		hasCpf = hasCpf + digit;
+		sum = 0;
+		for (var i = 0; i < 10; i++)
+			sum += int.Parse(
+				       s: hasCpf[index: i]
+					       .ToString()
+			       ) *
+			       multiplier2[i];
 
-        remainder = sum % 11;
-        if (remainder < 2)
-            remainder = 0;
-        else
-            remainder = 11 - remainder;
+		remainder = sum % 11;
+		if (remainder < 2)
+			remainder = 0;
+		else
+			remainder = 11 - remainder;
 
-        digit = digit + remainder.ToString();
+		digit = digit + remainder;
 
-        return number.EndsWith(digit);
-    }
-
+		return number.EndsWith(value: digit);
+	}
 }
