@@ -9,7 +9,7 @@ namespace Domain.Entities.Enums
 		[Description("Side Dish")]
 		SideDish = 2,
 		Snack = 3,
-		Dessert= 4
+		Dessert = 4
 
 	}
 }

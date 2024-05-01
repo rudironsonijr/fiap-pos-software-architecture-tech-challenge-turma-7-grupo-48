@@ -1,6 +1,6 @@
-﻿namespace Domain.Entities.Exceptions;
+namespace Domain.Entities.Exceptions;
 
-public class EntityArgumentException(
+public class EntityArgumentNullException(
 	string propertyName,
 	string entityName
 ) : Exception(
@@ -21,7 +21,7 @@ public class EntityArgumentException(
 	)
 	{
 		if (valid)
-			throw new EntityArgumentException(
+			throw new EntityArgumentNullException(
 				propertyName: propertyName,
 				entityName: entityType.ToString()
 			);

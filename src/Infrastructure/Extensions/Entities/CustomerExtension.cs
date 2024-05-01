@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.CustomerAggregate;
 using Infrastructure.SqlModels;
 
 namespace Infrastructure.Extensions.Entities;

@@ -1,14 +1,15 @@
-﻿using Domain.Entities.Helpers;
+using Domain.Entities.Helpers;
 using Domain.ValueObjects;
 
-namespace Domain.Entities;
+namespace Domain.Entities.CustomerAggregate;
 
 public class Customer
 {
 	public int Id { get; init; }
 
 	private string _name = string.Empty;
-	public required string Name {
+	public required string Name
+	{
 		get => _name;
 		init
 		{
