@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Domain.ValueObjects.Exceptions;
 
@@ -8,8 +8,8 @@ public struct Email
 {
 	public Email(string adress)
 	{
-		if (!IsValidEmail(email: adress))
-			throw new InvalidEmailException(address: adress);
+		if (!IsValidEmail(adress))
+			throw new InvalidEmailException(adress);
 		Adress = adress;
 	}
 
@@ -17,7 +17,7 @@ public struct Email
 
 	public static implicit operator Email(string adress)
 	{
-		return new Email(adress: adress);
+		return new Email(adress);
 	}
 
 	public static implicit operator string(Email email)
@@ -27,7 +27,7 @@ public struct Email
 
 	public static bool IsValidEmail(string email)
 	{
-		if (string.IsNullOrWhiteSpace(value: email))
+		if (string.IsNullOrWhiteSpace(email))
 			return false;
 
 		try
@@ -38,7 +38,7 @@ public struct Email
 				pattern: @"(@)(.+)$",
 				evaluator: DomainMapper,
 				options: RegexOptions.None,
-				matchTimeout: TimeSpan.FromMilliseconds(value: 200)
+				matchTimeout: TimeSpan.FromMilliseconds(200)
 			);
 
 			// Examines the domain part of the email and normalizes it.
@@ -48,16 +48,16 @@ public struct Email
 				var idn = new IdnMapping();
 
 				// Pull out and process domain name (throws ArgumentException on invalid)
-				var domainName = idn.GetAscii(unicode: match.Groups[groupnum: 2].Value);
+				var domainName = idn.GetAscii(match.Groups[2].Value);
 
-				return match.Groups[groupnum: 1].Value + domainName;
+				return match.Groups[1].Value + domainName;
 			}
 		}
-		catch (RegexMatchTimeoutException e)
+		catch (RegexMatchTimeoutException)
 		{
 			return false;
 		}
-		catch (ArgumentException e)
+		catch (ArgumentException)
 		{
 			return false;
 		}
@@ -68,7 +68,7 @@ public struct Email
 				input: email,
 				pattern: @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
 				options: RegexOptions.IgnoreCase,
-				matchTimeout: TimeSpan.FromMilliseconds(value: 250)
+				matchTimeout: TimeSpan.FromMilliseconds(250)
 			);
 		}
 		catch (RegexMatchTimeoutException)

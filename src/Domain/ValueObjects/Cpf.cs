@@ -1,14 +1,14 @@
-﻿namespace Domain.ValueObjects;
+namespace Domain.ValueObjects;
 
 public struct Cpf
 {
 	public Cpf(string number)
 	{
-		if (!IsValidCpf(number: number))
+		if (!IsValidCpf(number))
 		{
 			throw new ArgumentException(
-				message: "Invalid CPF",
-				paramName: nameof(number)
+				"Invalid CPF",
+				nameof(number)
 			);
 		}
 
@@ -17,12 +17,12 @@ public struct Cpf
 
 	public string Number { get; }
 
-	public string FormatedNumber => Convert.ToUInt64(value: Number)
+	public string FormatedNumber => Convert.ToUInt64(Number)
 		.ToString(format: @"000\.000\.000\-00");
 
 	public static implicit operator Cpf(string number)
 	{
-		return new Cpf(number: number);
+		return new Cpf(number);
 	}
 
 	public static implicit operator string(Cpf number)
@@ -51,7 +51,7 @@ public struct Cpf
 			if (j.ToString()
 				    .PadLeft(
 					    totalWidth: 11,
-					    paddingChar: char.Parse(s: j.ToString())
+					    paddingChar: char.Parse(j.ToString())
 				    ) ==
 			    number)
 				return false;
@@ -64,10 +64,9 @@ public struct Cpf
 
 		for (var i = 0; i < 9; i++)
 			sum += int.Parse(
-				       s: hasCpf[index: i]
-					       .ToString()
-			       ) *
-			       multiplier1[i];
+				hasCpf[i].
+					ToString()) *
+				multiplier1[i];
 
 		var remainder = sum % 11;
 		if (remainder < 2)
@@ -80,10 +79,9 @@ public struct Cpf
 		sum = 0;
 		for (var i = 0; i < 10; i++)
 			sum += int.Parse(
-				       s: hasCpf[index: i]
-					       .ToString()
-			       ) *
-			       multiplier2[i];
+				hasCpf[i]
+					.ToString()) *
+				multiplier2[i];
 
 		remainder = sum % 11;
 		if (remainder < 2)
@@ -93,6 +91,6 @@ public struct Cpf
 
 		digit = digit + remainder;
 
-		return number.EndsWith(value: digit);
+		return number.EndsWith(digit);
 	}
 }
