@@ -1,9 +1,10 @@
-using Domain.Entities.Exceptions;
+using Domain.Entities.Base.Exceptions;
+using Domain.Entities.Base.Interfaces;
 using Domain.ValueObjects;
 
 namespace Domain.Entities.CustomerAggregate;
 
-public class Customer
+public class Customer : IAggregateRoot
 {
 	public int Id { get; init; }
 

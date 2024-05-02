@@ -1,6 +1,6 @@
 using Domain.Exceptions;
 
-namespace Domain.Entities.Exceptions;
+namespace Domain.Entities.Base.Exceptions;
 
 public class EntityArgumentNullException(
 	string propertyName,
@@ -31,7 +31,7 @@ public class EntityArgumentNullException(
 
 	public static void ThrowIfPropertyNull(object? value, string propertyName, Type entityType)
 	{
-		if(value == null)
+		if (value == null)
 			throw new EntityArgumentNullException(
 					propertyName,
 					entityType.ToString()
@@ -49,7 +49,7 @@ public class EntityArgumentNullException(
 
 	public static void ThrowIfNullOrWhiteSpace<T>(IEnumerable<T>? value, string propertyName, Type entityType)
 	{
-		if(value is null || value.Any())
+		if (value is null || value.Any())
 		{
 			throw new EntityArgumentNullException(
 					propertyName,

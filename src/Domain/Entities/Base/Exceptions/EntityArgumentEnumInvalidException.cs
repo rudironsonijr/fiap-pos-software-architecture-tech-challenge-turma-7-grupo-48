@@ -1,6 +1,6 @@
 using Domain.Exceptions;
 
-namespace Domain.Entities.Exceptions;
+namespace Domain.Entities.Base.Exceptions;
 
 public class EntityArgumentEnumInvalidException(
 	string propertyName,

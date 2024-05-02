@@ -1,6 +1,6 @@
 using Domain.Exceptions;
 
-namespace Domain.Entities.Exceptions
+namespace Domain.Entities.Base.Exceptions
 {
 	public class EntityArgumentNumberInvalidException : DomainException
 	{
@@ -19,7 +19,7 @@ namespace Domain.Entities.Exceptions
 					format: message,
 					arg0: propertyName,
 					arg1: defaultValue,
-					arg2 : entityName
+					arg2: entityName
 					))
 		{
 
@@ -28,7 +28,7 @@ namespace Domain.Entities.Exceptions
 			string propertyName,
 			Type entityType)
 		{
-			if(compareValue <= 0)
+			if (compareValue <= 0)
 			{
 				throw new EntityArgumentNumberInvalidException(
 					DefaultNumberInvalidLessMessageTemplate,

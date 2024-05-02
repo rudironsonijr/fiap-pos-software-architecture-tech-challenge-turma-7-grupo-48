@@ -1,9 +1,10 @@
+using Domain.Entities.Base.Exceptions;
+using Domain.Entities.Base.Interfaces;
 using Domain.Entities.Enums;
-using Domain.Entities.Exceptions;
 
 namespace Domain.Entities.ProductAggregate;
 //ToDO: implementar Photo
-public class Product
+public class Product : IAggregateRoot
 {
 	public int Id { get; init; }
 

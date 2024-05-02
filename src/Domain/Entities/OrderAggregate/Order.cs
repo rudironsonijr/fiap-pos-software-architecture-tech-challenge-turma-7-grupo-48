@@ -1,10 +1,11 @@
+using Domain.Entities.Base.Interfaces;
 using Domain.Entities.Enums;
 using Domain.Entities.OrderAggregate.Exceptions;
 using Domain.Entities.ProductAggregate;
 
 namespace Domain.Entities.OrderAggregate
 {
-	public class Order 
+	public class Order : IAggregateRoot
 	{
 		public Order() { }
 		public Order(int id, OrderStatus status, List<OrderProduct> orderProducts) { 
