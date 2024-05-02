@@ -16,7 +16,7 @@ namespace Domain.Entities.OrderAggregate
 		public int? CustomerId { get; init; }
 		public OrderStatus Status { get; private set; } = OrderStatus.Creating;
 
-		public List<OrderProduct> _orderProducts = [];
+		private List<OrderProduct> _orderProducts = [];
 		public IReadOnlyCollection<OrderProduct> Products { get => _orderProducts.AsReadOnly(); }
 		public decimal Price { 
 			get 
