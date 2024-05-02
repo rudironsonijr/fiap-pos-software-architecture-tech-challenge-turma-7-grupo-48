@@ -1,6 +1,8 @@
+using Domain.Exceptions;
+
 namespace Domain.Entities.Exceptions
 {
-	public class EntityArgumentNumberInvalidException : Exception
+	public class EntityArgumentNumberInvalidException : DomainException
 	{
 		private const string DefaultNumberInvalidGreaterOrEqualMessageTemplate =
 			"The property {0} can't be greater than or equal {1} in model {2}";

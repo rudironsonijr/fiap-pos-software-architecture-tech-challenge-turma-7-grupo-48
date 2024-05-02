@@ -1,8 +1,10 @@
-﻿namespace Domain.ValueObjects.Exceptions;
+using Domain.Exceptions;
+
+namespace Domain.ValueObjects.Exceptions;
 
 public class InvalidCpfException(
 	string number
-) : Exception(
+) : DomainException(
 	message: string.Format(
 		format: DefaultInvalidEmailMessageTemplate,
 		arg0: number

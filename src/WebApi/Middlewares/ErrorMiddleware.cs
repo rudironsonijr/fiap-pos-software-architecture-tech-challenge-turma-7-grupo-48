@@ -1,5 +1,6 @@
 using Domain.Entities.Exceptions;
 using Domain.Entities.OrderAggregate.Exceptions;
+using Domain.Exceptions;
 using Domain.ValueObjects.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
@@ -30,16 +31,7 @@ public class ErrorMiddleware
         {
             await _next(context);
         }
-        catch (Exception exception)
-        when (exception
-        is InvalidEmailException
-        or InvalidCpfException
-        or EntityArgumentNullException
-		or EntityArgumentEnumInvalidException
-		or EntityArgumentNumberInvalidException
-		or ChangeOrderStatusToReceivedException
-		or ChangeOrderProductNotAbleException
-		)
+        catch (DomainException exception)
         {
             _logger.LogWarning(exception, exception.Message);
 

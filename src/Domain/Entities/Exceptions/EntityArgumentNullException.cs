@@ -1,9 +1,11 @@
+using Domain.Exceptions;
+
 namespace Domain.Entities.Exceptions;
 
 public class EntityArgumentNullException(
 	string propertyName,
 	string entityName
-) : Exception(
+) : DomainException(
 	message: string.Format(
 		format: DefaultEntityArgumentMessageTemplate,
 		arg0: propertyName,

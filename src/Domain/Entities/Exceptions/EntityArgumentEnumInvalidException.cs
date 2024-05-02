@@ -1,10 +1,12 @@
+using Domain.Exceptions;
+
 namespace Domain.Entities.Exceptions;
 
 public class EntityArgumentEnumInvalidException(
 	string propertyName,
 	string enumType,
 	string entityName
-	) : Exception(
+	) : DomainException(
 		message: string.Format(
 			format: DefaultEntityEnumInvalidValuMessageTemplate,
 			arg0: propertyName,

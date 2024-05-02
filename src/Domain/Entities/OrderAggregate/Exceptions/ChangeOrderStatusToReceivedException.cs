@@ -1,5 +1,7 @@
+using Domain.Exceptions;
+
 namespace Domain.Entities.OrderAggregate.Exceptions;
-public class ChangeOrderStatusToReceivedException : Exception
+public class ChangeOrderStatusToReceivedException : DomainException
 {
 	private ChangeOrderStatusToReceivedException(string message) : base(message)
 	{
