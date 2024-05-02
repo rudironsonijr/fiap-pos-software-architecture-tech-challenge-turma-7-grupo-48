@@ -28,6 +28,13 @@ namespace Domain.Entities.OrderAggregate
 
 		public Order AddProduct(Product product, int quantity)
 		{
+			var item = _orderProducts.SingleOrDefault(x => x.Id == product.Id);
+			if(item != null)
+			{
+				item.Quantity += quantity;
+				return this;
+			}
+
 			OrderProduct orderProduct = new()
 			{
 				ProductId = product.Id,
@@ -49,11 +56,38 @@ namespace Domain.Entities.OrderAggregate
 			return this;
 		}
 
+		public Order UpdateProductQuantity(int orderProductId, int quantity)
+		{
+			var itemToUpdate = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+			if (itemToUpdate == null)
+			{
+				return this;
+			}
+
+			if(quantity == 0)
+			{
+				_orderProducts.Remove(itemToUpdate);
+				return this;
+			}
+
+			itemToUpdate.Quantity = quantity;
+			return this;
+		}
+
 		public Order ChangeStatusToReceived()
 		{
 			ChangeOrderStatusToReceivedException.ThrowIfOrderProductsIsEmpty(_orderProducts);
 			Status = OrderStatus.Received;
 			return this;
+		}
+
+		private void ValidateStatusToUpdateOrderProduct()
+		{
+			if(Status == OrderStatus.Creating)
+			{
+				return;
+			}
+			throw new ChangeOrderProductNotAbleException();
 		}
 	}
 }

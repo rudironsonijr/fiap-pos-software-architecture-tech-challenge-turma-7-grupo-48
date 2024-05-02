@@ -38,6 +38,7 @@ public class ErrorMiddleware
 		or EntityArgumentEnumInvalidException
 		or EntityArgumentNumberInvalidException
 		or ChangeOrderStatusToReceivedException
+		or ChangeOrderProductNotAbleException
 		)
         {
             _logger.LogWarning(exception, exception.Message);

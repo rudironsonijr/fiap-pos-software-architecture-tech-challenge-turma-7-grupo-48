@@ -22,7 +22,6 @@ namespace Domain.Entities.Exceptions
 		{
 
 		}
-
 		public static void ThrowIfLessOrEqualZero(decimal compareValue,
 			string propertyName,
 			Type entityType)

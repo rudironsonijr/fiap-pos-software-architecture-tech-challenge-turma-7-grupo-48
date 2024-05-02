@@ -2,6 +2,7 @@ using Domain.Entities.Enums;
 using Domain.Entities.Exceptions;
 
 namespace Domain.Entities.ProductAggregate;
+//ToDO: implementar Photo
 public class Product
 {
 	public int Id { get; init; }
