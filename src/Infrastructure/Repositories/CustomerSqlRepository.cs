@@ -1,7 +1,8 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Infrastructure.Context;
 using Infrastructure.Repositories.Interfaces;
 using Infrastructure.SqlModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
@@ -20,6 +21,17 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 	)
 	{
 		return await _context.Customer.FindAsync(
+			expression,
+			cancellationToken
+		);
+	}
+
+	public Task<int> CountAsync(
+	Expression<Func<CustomerSqlModel, bool>> expression,
+	CancellationToken cancellationToken
+	)
+	{
+		return _context.Customer.CountAsync(
 			expression,
 			cancellationToken
 		);
