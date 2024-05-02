@@ -27,7 +27,8 @@ public class OrderController : ControllerBase
 
 	[HttpPost]
 	[Route("{id}/product")]
-	public async Task<IActionResult> AddProduct(int id,
+	public async Task<IActionResult> AddProduct(
+		int id,
 		OrderAddProductRequest orderAddProductRequest,
 		CancellationToken cancellationToken)
 	{
@@ -45,7 +46,7 @@ public class OrderController : ControllerBase
 		OrderUpdateProductQuantityRequest orderAddProductRequest,
 		CancellationToken cancellationToken)
 	{
-		var response = await _orderService.AddProduct(id, orderAddProductRequest, cancellationToken);
+		var response = await _orderService.UpdateProductQuantity(id, orderProductId, orderAddProductRequest, cancellationToken);
 
 		return Ok(response);
 
@@ -53,13 +54,27 @@ public class OrderController : ControllerBase
 
 	[HttpDelete]
 	[Route("{orderId}/order-product/{orderProductId}")]
-	public async Task<IActionResult> RemoveProduct(int id,
+	public async Task<IActionResult> RemoveProduct(
+		int id,
 		int orderProductId,
 		CancellationToken cancellationToken)
 	{
 		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
 
 		return Ok(response);
+
+	}
+
+	[HttpDelete]
+	[Route("{orderId}")]
+	public async Task<IActionResult> CancelOrder(
+		int id,
+		int orderProductId,
+		CancellationToken cancellationToken)
+	{
+		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
+
+		return NoContent();
 
 	}
 }

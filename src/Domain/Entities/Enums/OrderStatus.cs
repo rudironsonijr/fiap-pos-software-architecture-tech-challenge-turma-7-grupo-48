@@ -5,9 +5,10 @@ public enum OrderStatus
 {
 	None = 0,
 	Creating = 1,
-	Received = 2,
-	Preparing = 3,
+	Received = 3,
+	Preparing = 4,
 	[Description("Order Soon")]
-	OrderSoon = 4,
-	Finished = 5
+	OrderSoon = 5,
+	Finished = 6,
+	Cancelled = 7
 }

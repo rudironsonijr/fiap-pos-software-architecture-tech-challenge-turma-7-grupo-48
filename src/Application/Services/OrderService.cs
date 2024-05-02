@@ -57,7 +57,7 @@ public class OrderService : IOrderService
 		{
 			OrderId = order.Id
 		};
-
+		throw new NotImplementedException();
 		return response;
 
 	}
@@ -84,6 +84,7 @@ public class OrderService : IOrderService
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
+		throw new NotImplementedException();
 		//ToDo: Fazer o mapeamento do response
 		return new OrderUpdateProductResponse();
 	}
@@ -100,6 +101,7 @@ public class OrderService : IOrderService
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
+		throw new NotImplementedException();
 		//ToDo: Fazer o mapeamento do response
 		return new OrderUpdateProductResponse();
 	}
@@ -117,8 +119,21 @@ public class OrderService : IOrderService
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
+		throw new NotImplementedException();
 		//ToDo: Fazer o mapeamento do response
 		return new OrderUpdateProductResponse();
+	}
+
+	public async Task CancelOrder(
+		int orderId,
+		CancellationToken cancellationToken)
+	{
+		//ToDo: validar caso order não encontrado
+		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+
+		order.ChangeStatusToCancelled();
+
+		await _orderRepository.UpdateAsync(order, cancellationToken);
 	}
 
 	private async Task<Customer?> GetCustomer(string? cpf, CancellationToken cancellationToken)

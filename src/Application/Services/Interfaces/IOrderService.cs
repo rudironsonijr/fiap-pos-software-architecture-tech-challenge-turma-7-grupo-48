@@ -22,4 +22,7 @@ public interface IOrderService
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderUpdateProductQuantityRequest,
 		CancellationToken cancellationToken);
+	Task CancelOrder(
+		int orderId,
+		CancellationToken cancellationToken);
 }

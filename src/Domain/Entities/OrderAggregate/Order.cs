@@ -28,7 +28,10 @@ namespace Domain.Entities.OrderAggregate
 
 		public Order AddProduct(Product product, int quantity)
 		{
+			ValidateStatusToUpdateOrderProduct();
+
 			var item = _orderProducts.SingleOrDefault(x => x.Id == product.Id);
+
 			if(item != null)
 			{
 				item.Quantity += quantity;
@@ -48,17 +51,24 @@ namespace Domain.Entities.OrderAggregate
 
 		public Order RemoveProduct(int orderProductId)
 		{
+			ValidateStatusToUpdateOrderProduct();
+
 			var itemToRemove = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+
 			if(itemToRemove != null)
 			{
 				_orderProducts.Remove(itemToRemove);
 			}
+
 			return this;
 		}
 
 		public Order UpdateProductQuantity(int orderProductId, int quantity)
 		{
+			ValidateStatusToUpdateOrderProduct();
+
 			var itemToUpdate = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+
 			if (itemToUpdate == null)
 			{
 				return this;
@@ -76,8 +86,24 @@ namespace Domain.Entities.OrderAggregate
 
 		public Order ChangeStatusToReceived()
 		{
-			ChangeOrderStatusToReceivedException.ThrowIfOrderProductsIsEmpty(_orderProducts);
+			ChangeOrderStatusInvalidException.ThrowIfOrderProductsIsEmpty(_orderProducts);
+			ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+				ActualStatus: Status,
+				ExpectedStatus: OrderStatus.Creating,
+				NewStatus: OrderStatus.Received);
+
 			Status = OrderStatus.Received;
+			return this;
+		}
+
+		public Order ChangeStatusToCancelled()
+		{
+			ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+				ActualStatus: Status,
+				ExpectedStatus: OrderStatus.Creating,
+				NewStatus: OrderStatus.Cancelled);
+
+			Status = OrderStatus.Cancelled;
 			return this;
 		}
 
