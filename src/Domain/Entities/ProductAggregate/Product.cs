@@ -1,6 +1,5 @@
 using Domain.Entities.Enums;
 using Domain.Entities.Exceptions;
-using Domain.Entities.Helpers;
 
 namespace Domain.Entities.ProductAggregate;
 public class Product
@@ -13,7 +12,7 @@ public class Product
 		get => _name;
 		init
 		{
-			EntityValidation.FailIfNullOrWhiteSpace(
+			EntityArgumentNullException.ThrowIfNullOrWhiteSpace(
 				value, 
 				nameof(Name), 
 				GetType());
@@ -28,7 +27,7 @@ public class Product
 		get => _description;
 		set
 		{
-			EntityValidation.FailIfNullOrWhiteSpace(
+			EntityArgumentNullException.ThrowIfNullOrWhiteSpace(
 				value, 
 				nameof(Description), 
 				GetType());
@@ -58,7 +57,7 @@ public class Product
 		get => _price;
 		set
 		{
-			EntityValidation.FailIfLessOrEqualZero(
+			EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
 				value, 
 				nameof(Price), 
 				GetType());	

@@ -1,4 +1,4 @@
-using Domain.Entities.Helpers;
+using Domain.Entities.Exceptions;
 using Domain.ValueObjects;
 
 namespace Domain.Entities.CustomerAggregate;
@@ -13,7 +13,7 @@ public class Customer
 		get => _name;
 		init
 		{
-			EntityValidation.FailIfNullOrWhiteSpace(
+			EntityArgumentNullException.ThrowIfNullOrWhiteSpace(
 				value, 
 				nameof(Name), 
 				GetType());
@@ -28,7 +28,7 @@ public class Customer
 		get => _email;
 		init
 		{
-			EntityValidation.FailIfNull(
+			EntityArgumentNullException.ThrowIfPropertyNull(
 				value, 
 				nameof(Email), 
 				GetType());
@@ -43,7 +43,7 @@ public class Customer
 		get => _cpf;
 		init
 		{
-			EntityValidation.FailIfNull(
+			EntityArgumentNullException.ThrowIfPropertyNull(
 				value, 
 				nameof(Email), 
 				GetType());

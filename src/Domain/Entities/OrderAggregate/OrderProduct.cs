@@ -1,6 +1,4 @@
-using Domain.Entities.Enums;
 using Domain.Entities.Exceptions;
-using Domain.Entities.Helpers;
 
 namespace Domain.Entities.OrderAggregate
 {
@@ -15,7 +13,7 @@ namespace Domain.Entities.OrderAggregate
 			get => _productPrice;
 			init
 			{
-				EntityValidation.FailIfLessOrEqualZero(
+				EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
 					value,
 					nameof(ProductPrice),
 					GetType());
@@ -30,7 +28,7 @@ namespace Domain.Entities.OrderAggregate
 			get => _quantity;
 			set
 			{
-				EntityValidation.FailIfLessOrEqualZero(
+				EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
 					value,
 					nameof(Quantity),
 					GetType());

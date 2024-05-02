@@ -22,8 +22,27 @@ public class EntityArgumentNullException(
 	{
 		if (valid)
 			throw new EntityArgumentNullException(
-				propertyName: propertyName,
-				entityName: entityType.ToString()
+				propertyName,
+				entityType.ToString()
 			);
 	}
+
+	public static void ThrowIfPropertyNull(object? value, string propertyName, Type entityType)
+	{
+		if(value == null)
+			throw new EntityArgumentNullException(
+					propertyName,
+					entityType.ToString()
+				);
+	}
+
+	public static void ThrowIfNullOrWhiteSpace(string? value, string propertyName, Type entityType)
+	{
+		if (string.IsNullOrEmpty(value))
+			throw new EntityArgumentNullException(
+					propertyName,
+					entityType.ToString()
+				);
+	}
+
 }
