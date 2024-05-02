@@ -45,4 +45,15 @@ public class EntityArgumentNullException(
 				);
 	}
 
+	public static void ThrowIfNullOrWhiteSpace<T>(IEnumerable<T>? value, string propertyName, Type entityType)
+	{
+		if(value is null || value.Any())
+		{
+			throw new EntityArgumentNullException(
+					propertyName,
+					entityType.ToString()
+				);
+		}
+	}
+
 }
