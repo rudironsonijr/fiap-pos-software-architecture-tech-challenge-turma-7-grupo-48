@@ -1,4 +1,4 @@
-﻿using Infrastructure.SqlModels;
+using Infrastructure.SqlModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Context;
@@ -29,8 +29,8 @@ public class SqlContext : DbContext
 		}
 
 		return base.SaveChangesAsync(
-			acceptAllChangesOnSuccess: acceptAllChangesOnSuccess,
-			cancellationToken: token
+			acceptAllChangesOnSuccess,
+			token
 		);
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Domain.Entities.CustomerAggregate;
+using Domain.Entities.CustomerAggregate;
 using Domain.Repositories;
 using Domain.ValueObjects;
 using Infrastructure.Repositories.Interfaces;
@@ -14,12 +14,12 @@ public class CustomerRepositoryAdapter : ICustomerRepository
         _customerSqlRepository = customerSqlRepository;
     }
 
-    public async Task<Customer> GetByCpf(string cpf, CancellationToken cancellationToken)
+    public async Task<Customer?> GetByCpf(string cpf, CancellationToken cancellationToken)
     {
         var customerSql = await _customerSqlRepository.GetAsync(
             customer => customer.Cpf.Equals(cpf), 
             cancellationToken);
 
-        return customerSql.ToCustomer();
+        return customerSql?.ToCustomer();
     }
 }
