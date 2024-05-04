@@ -2,7 +2,7 @@ using Domain.Exceptions;
 
 namespace Domain.Entities.Base.Exceptions;
 
-public class EntityArgumentNullException(
+internal class EntityArgumentNullException(
 	string propertyName,
 	string entityName
 ) : DomainException(

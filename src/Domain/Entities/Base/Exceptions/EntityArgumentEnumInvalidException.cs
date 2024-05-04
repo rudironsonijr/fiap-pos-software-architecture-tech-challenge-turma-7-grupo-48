@@ -2,7 +2,7 @@ using Domain.Exceptions;
 
 namespace Domain.Entities.Base.Exceptions;
 
-public class EntityArgumentEnumInvalidException(
+internal class EntityArgumentEnumInvalidException(
 	string propertyName,
 	string enumType,
 	string entityName

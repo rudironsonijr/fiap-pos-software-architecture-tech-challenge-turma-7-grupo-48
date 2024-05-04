@@ -3,7 +3,7 @@ using Domain.Exceptions;
 using Helpers;
 
 namespace Domain.Entities.OrderAggregate.Exceptions;
-public class ChangeOrderStatusInvalidException : DomainException
+internal class ChangeOrderStatusInvalidException : DomainException
 {
 	private const string MessageThrowIfOrderStatusInvalidStepChangeTemplate = "Is not possible change a order in status {1} to {2}";
 	private ChangeOrderStatusInvalidException(string message) : base(message)
