@@ -1,7 +1,4 @@
-using Domain.Entities.Exceptions;
-using Domain.Entities.OrderAggregate.Exceptions;
 using Domain.Exceptions;
-using Domain.ValueObjects.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;

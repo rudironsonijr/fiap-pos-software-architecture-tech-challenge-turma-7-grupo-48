@@ -1,6 +1,5 @@
 using Domain.Entities.CustomerAggregate;
 using Domain.Repositories;
-using Domain.ValueObjects;
 using Infrastructure.Repositories.Interfaces;
 using Infrastructure.SqlModels.Extensions;
 
