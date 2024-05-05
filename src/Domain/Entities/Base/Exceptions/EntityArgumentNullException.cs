@@ -6,10 +6,10 @@ internal class EntityArgumentNullException(
 	string propertyName,
 	string entityName
 ) : DomainException(
-	message: string.Format(
-		format: DefaultEntityArgumentMessageTemplate,
-		arg0: propertyName,
-		arg1: entityName
+	string.Format(
+		DefaultEntityArgumentMessageTemplate,
+		propertyName,
+		entityName
 	)
 )
 {
@@ -29,33 +29,43 @@ internal class EntityArgumentNullException(
 			);
 	}
 
-	public static void ThrowIfPropertyNull(object? value, string propertyName, Type entityType)
+	public static void ThrowIfPropertyNull(
+		object? value,
+		string propertyName,
+		Type entityType
+	)
 	{
 		if (value == null)
 			throw new EntityArgumentNullException(
-					propertyName,
-					entityType.ToString()
-				);
+				propertyName,
+				entityType.ToString()
+			);
 	}
 
-	public static void ThrowIfNullOrWhiteSpace(string? value, string propertyName, Type entityType)
+	public static void ThrowIfNullOrWhiteSpace(
+		string? value,
+		string propertyName,
+		Type entityType
+	)
 	{
 		if (string.IsNullOrEmpty(value))
 			throw new EntityArgumentNullException(
-					propertyName,
-					entityType.ToString()
-				);
+				propertyName,
+				entityType.ToString()
+			);
 	}
 
-	public static void ThrowIfNullOrWhiteSpace<T>(IEnumerable<T>? value, string propertyName, Type entityType)
+	public static void ThrowIfNullOrWhiteSpace<T>(
+		IEnumerable<T>? value,
+		string propertyName,
+		Type entityType
+	)
 	{
-		if (value is null || value.Any())
-		{
+		if (value is null ||
+		    value.Any())
 			throw new EntityArgumentNullException(
-					propertyName,
-					entityType.ToString()
-				);
-		}
+				propertyName,
+				entityType.ToString()
+			);
 	}
-
 }

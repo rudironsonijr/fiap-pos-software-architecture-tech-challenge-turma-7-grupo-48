@@ -7,22 +7,30 @@ public interface IOrderService
 {
 	Task<OrderCreateResponse> CreateAsync(
 		OrderCreateRequest orderCreateRequest,
-		CancellationToken cancellationToken);
+		CancellationToken cancellationToken
+	);
 
 	Task<OrderUpdateProductResponse> AddProduct(
 		int OrderId,
 		OrderAddProductRequest orderAddProductRequest,
-		CancellationToken cancellationToken);
+		CancellationToken cancellationToken
+	);
+
 	Task<OrderUpdateProductResponse> RemoveProduct(
-	   int orderId,
-	   int orderProductId,
-	   CancellationToken cancellationToken);
+		int orderId,
+		int orderProductId,
+		CancellationToken cancellationToken
+	);
+
 	Task<OrderUpdateProductResponse> UpdateProductQuantity(
 		int orderId,
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderUpdateProductQuantityRequest,
-		CancellationToken cancellationToken);
+		CancellationToken cancellationToken
+	);
+
 	Task CancelOrder(
 		int orderId,
-		CancellationToken cancellationToken);
+		CancellationToken cancellationToken
+	);
 }

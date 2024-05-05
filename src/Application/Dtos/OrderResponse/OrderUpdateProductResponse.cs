@@ -1,5 +1,3 @@
 namespace Application.Dtos.OrderResponse;
 
-public record OrderUpdateProductResponse
-{
-}
+public record OrderUpdateProductResponse { }

@@ -9,13 +9,15 @@ namespace Application.Services;
 
 public class OrderService : IOrderService
 {
-	private readonly IOrderRepository _orderRepository;
 	private readonly ICustomerRepository _customerRepository;
+	private readonly IOrderRepository _orderRepository;
 	private readonly IProductRepository _productRepository;
+
 	public OrderService(
 		IOrderRepository orderRepository,
 		ICustomerRepository customerRepository,
-		IProductRepository productRepository)
+		IProductRepository productRepository
+	)
 	{
 		_orderRepository = orderRepository;
 		_customerRepository = customerRepository;
@@ -24,16 +26,18 @@ public class OrderService : IOrderService
 
 	public async Task<OrderCreateResponse> CreateAsync(
 		OrderCreateRequest orderCreateRequest,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		//Todo: Validar se a OrderAddProduct não veio vazia
 		var customerTask = GetCustomer(
 			orderCreateRequest.CustomerCpf,
-			cancellationToken);
+			cancellationToken
+		);
 		var productTask = _productRepository.GetAsync(
 			orderCreateRequest.Product.ProductId,
 			cancellationToken
-			);
+		);
 
 		await Task.WhenAll(productTask, customerTask);
 
@@ -43,13 +47,13 @@ public class OrderService : IOrderService
 
 		Order order = new()
 		{
-			CustomerId = customer?.Id,
+			CustomerId = customer?.Id
 		};
 
 		order.AddProduct(
 			product,
 			orderCreateRequest.Product.Quantity
-			);
+		);
 
 		order = await _orderRepository.CreateAsync(order, cancellationToken);
 
@@ -59,19 +63,19 @@ public class OrderService : IOrderService
 		};
 		throw new NotImplementedException();
 		return response;
-
 	}
 
 	public async Task<OrderUpdateProductResponse> AddProduct(
 		int orderId,
 		OrderAddProductRequest orderAddProductRequest,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		var orderTask = _orderRepository.GetAsync(orderId, cancellationToken);
 		var productTask = _productRepository.GetAsync(
 			orderAddProductRequest.ProductId,
 			cancellationToken
-			);
+		);
 
 		await Task.WhenAll(productTask, orderTask);
 
@@ -90,9 +94,10 @@ public class OrderService : IOrderService
 	}
 
 	public async Task<OrderUpdateProductResponse> RemoveProduct(
-	int orderId,
-	int orderProductId,
-	CancellationToken cancellationToken)
+		int orderId,
+		int orderProductId,
+		CancellationToken cancellationToken
+	)
 	{
 		//ToDo: validar caso order não encontrado
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
@@ -110,7 +115,8 @@ public class OrderService : IOrderService
 		int orderId,
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderUpdateProductQuantityRequest,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		//ToDo: validar caso order não encontrado
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
@@ -126,7 +132,8 @@ public class OrderService : IOrderService
 
 	public async Task CancelOrder(
 		int orderId,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		//ToDo: validar caso order não encontrado
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
@@ -136,19 +143,19 @@ public class OrderService : IOrderService
 		await _orderRepository.UpdateAsync(order, cancellationToken);
 	}
 
-	private async Task<Customer?> GetCustomer(string? cpf, CancellationToken cancellationToken)
+	private async Task<Customer?> GetCustomer(
+		string? cpf,
+		CancellationToken cancellationToken
+	)
 	{
 		if (string.IsNullOrEmpty(cpf))
 			return null;
 
 		var customer = await _customerRepository.GetByCpf(cpf, cancellationToken);
 		if (customer == null)
-		{
 			//ToDo: Implementar validação caso não encontre o Customer
 			throw new NotImplementedException();
-		}
 
 		return customer;
-
 	}
 }

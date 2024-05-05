@@ -27,8 +27,8 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 	}
 
 	public Task<int> CountAsync(
-	Expression<Func<CustomerSqlModel, bool>> expression,
-	CancellationToken cancellationToken
+		Expression<Func<CustomerSqlModel, bool>> expression,
+		CancellationToken cancellationToken
 	)
 	{
 		return _context.Customer.CountAsync(

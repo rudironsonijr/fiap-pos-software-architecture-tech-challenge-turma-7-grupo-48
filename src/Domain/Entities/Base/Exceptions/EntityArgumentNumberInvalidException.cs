@@ -1,6 +1,7 @@
 using Domain.Exceptions;
 
 namespace Domain.Entities.Base.Exceptions;
+
 internal class EntityArgumentNumberInvalidException : DomainException
 {
 	private const string DefaultNumberInvalidGreaterOrEqualMessageTemplate =
@@ -13,27 +14,29 @@ internal class EntityArgumentNumberInvalidException : DomainException
 		string message,
 		string propertyName,
 		decimal defaultValue,
-		string entityName) : base(
+		string entityName
+	)
+		: base(
 			string.Format(
-				format: message,
-				arg0: propertyName,
-				arg1: defaultValue,
-				arg2: entityName
-				))
-	{
+				message,
+				propertyName,
+				defaultValue,
+				entityName
+			)
+		) { }
 
-	}
-	public static void ThrowIfLessOrEqualZero(decimal compareValue,
+	public static void ThrowIfLessOrEqualZero(
+		decimal compareValue,
 		string propertyName,
-		Type entityType)
+		Type entityType
+	)
 	{
 		if (compareValue <= 0)
-		{
 			throw new EntityArgumentNumberInvalidException(
 				DefaultNumberInvalidLessMessageTemplate,
 				propertyName,
 				0,
-				entityType.ToString());
-		}
+				entityType.ToString()
+			);
 	}
 }

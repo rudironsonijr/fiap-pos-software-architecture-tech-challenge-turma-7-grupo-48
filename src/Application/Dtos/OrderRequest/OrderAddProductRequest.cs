@@ -1,8 +1,7 @@
-namespace Application.Dtos.OrderRequest
+namespace Application.Dtos.OrderRequest;
+
+public record OrderAddProductRequest
 {
-	public record OrderAddProductRequest
-	{
-		public int ProductId { get; set; }
-		public int Quantity { get; set; }
-	}
+	public int ProductId { get; set; }
+	public int Quantity { get; set; }
 }

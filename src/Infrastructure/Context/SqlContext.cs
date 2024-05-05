@@ -15,9 +15,9 @@ public class SqlContext : DbContext
 		var entries = ChangeTracker
 			.Entries()
 			.Where(
-				predicate: e => e.Entity is BaseSqlModel &&
-				                (
-					                e.State == EntityState.Added || e.State == EntityState.Modified)
+				e => e.Entity is BaseSqlModel &&
+				     (
+					     e.State == EntityState.Added || e.State == EntityState.Modified)
 			);
 
 		foreach (var entityEntry in entries)

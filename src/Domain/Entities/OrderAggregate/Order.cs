@@ -3,118 +3,125 @@ using Domain.Entities.Enums;
 using Domain.Entities.OrderAggregate.Exceptions;
 using Domain.Entities.ProductAggregate;
 
-namespace Domain.Entities.OrderAggregate
+namespace Domain.Entities.OrderAggregate;
+
+public class Order : IAggregateRoot
 {
-	public class Order : IAggregateRoot
+	private readonly List<OrderProduct> _orderProducts = [];
+	public Order() { }
+
+	public Order(
+		int id,
+		OrderStatus status,
+		List<OrderProduct> orderProducts
+	)
 	{
-		public Order() { }
-		public Order(int id, OrderStatus status, List<OrderProduct> orderProducts) { 
-			Id = id;
-			Status = status;
-			_orderProducts = orderProducts;
-		}
-		public int Id { get; init; }
-		public int? CustomerId { get; init; }
-		public OrderStatus Status { get; private set; } = OrderStatus.Creating;
+		Id = id;
+		Status = status;
+		_orderProducts = orderProducts;
+	}
 
-		private List<OrderProduct> _orderProducts = [];
-		public IReadOnlyCollection<OrderProduct> Products { get => _orderProducts.AsReadOnly(); }
-		public decimal Price { 
-			get 
-			{
-				decimal total = _orderProducts.Sum(x => x.Price);
-				return Math.Round(total, 2);
-			} 
-		}
+	public int Id { get; init; }
+	public int? CustomerId { get; init; }
+	public OrderStatus Status { get; private set; } = OrderStatus.Creating;
+	public IReadOnlyCollection<OrderProduct> Products => _orderProducts.AsReadOnly();
 
-		public Order AddProduct(Product product, int quantity)
+	public decimal Price
+	{
+		get
 		{
-			ValidateStatusToUpdateOrderProduct();
+			var total = _orderProducts.Sum(x => x.Price);
+			return Math.Round(total, 2);
+		}
+	}
 
-			var item = _orderProducts.SingleOrDefault(x => x.Id == product.Id);
+	public Order AddProduct(
+		Product product,
+		int quantity
+	)
+	{
+		ValidateStatusToUpdateOrderProduct();
 
-			if(item != null)
-			{
-				item.Quantity += quantity;
-				return this;
-			}
+		var item = _orderProducts.SingleOrDefault(x => x.Id == product.Id);
 
-			OrderProduct orderProduct = new()
-			{
-				ProductId = product.Id,
-				ProductPrice = product.Price,
-				Quantity = quantity,
-			};
-
-			_orderProducts.Add(orderProduct);
+		if (item != null)
+		{
+			item.Quantity += quantity;
 			return this;
 		}
 
-		public Order RemoveProduct(int orderProductId)
+		OrderProduct orderProduct = new()
 		{
-			ValidateStatusToUpdateOrderProduct();
+			ProductId = product.Id, ProductPrice = product.Price, Quantity = quantity
+		};
 
-			var itemToRemove = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+		_orderProducts.Add(orderProduct);
+		return this;
+	}
 
-			if(itemToRemove != null)
-			{
-				_orderProducts.Remove(itemToRemove);
-			}
+	public Order RemoveProduct(int orderProductId)
+	{
+		ValidateStatusToUpdateOrderProduct();
 
+		var itemToRemove = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+
+		if (itemToRemove != null)
+			_orderProducts.Remove(itemToRemove);
+
+		return this;
+	}
+
+	public Order UpdateProductQuantity(
+		int orderProductId,
+		int quantity
+	)
+	{
+		ValidateStatusToUpdateOrderProduct();
+
+		var itemToUpdate = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+
+		if (itemToUpdate == null)
+			return this;
+
+		if (quantity == 0)
+		{
+			_orderProducts.Remove(itemToUpdate);
 			return this;
 		}
 
-		public Order UpdateProductQuantity(int orderProductId, int quantity)
-		{
-			ValidateStatusToUpdateOrderProduct();
+		itemToUpdate.Quantity = quantity;
+		return this;
+	}
 
-			var itemToUpdate = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+	public Order ChangeStatusToReceived()
+	{
+		ChangeOrderStatusInvalidException.ThrowIfOrderProductsIsEmpty(_orderProducts);
+		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+			Status,
+			OrderStatus.Creating,
+			OrderStatus.Received
+		);
 
-			if (itemToUpdate == null)
-			{
-				return this;
-			}
+		Status = OrderStatus.Received;
+		return this;
+	}
 
-			if(quantity == 0)
-			{
-				_orderProducts.Remove(itemToUpdate);
-				return this;
-			}
+	public Order ChangeStatusToCancelled()
+	{
+		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+			Status,
+			OrderStatus.Creating,
+			OrderStatus.Cancelled
+		);
 
-			itemToUpdate.Quantity = quantity;
-			return this;
-		}
+		Status = OrderStatus.Cancelled;
+		return this;
+	}
 
-		public Order ChangeStatusToReceived()
-		{
-			ChangeOrderStatusInvalidException.ThrowIfOrderProductsIsEmpty(_orderProducts);
-			ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
-				ActualStatus: Status,
-				ExpectedStatus: OrderStatus.Creating,
-				NewStatus: OrderStatus.Received);
-
-			Status = OrderStatus.Received;
-			return this;
-		}
-
-		public Order ChangeStatusToCancelled()
-		{
-			ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
-				ActualStatus: Status,
-				ExpectedStatus: OrderStatus.Creating,
-				NewStatus: OrderStatus.Cancelled);
-
-			Status = OrderStatus.Cancelled;
-			return this;
-		}
-
-		private void ValidateStatusToUpdateOrderProduct()
-		{
-			if(Status == OrderStatus.Creating)
-			{
-				return;
-			}
-			throw new ChangeOrderProductNotAbleException();
-		}
+	private void ValidateStatusToUpdateOrderProduct()
+	{
+		if (Status == OrderStatus.Creating)
+			return;
+		throw new ChangeOrderProductNotAbleException();
 	}
 }

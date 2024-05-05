@@ -1,6 +1,5 @@
 using Application.Dtos.OrderRequest;
 using Application.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -10,19 +9,21 @@ namespace WebApi.Controllers;
 public class OrderController : ControllerBase
 {
 	private readonly IOrderService _orderService;
+
 	public OrderController(IOrderService orderService)
 	{
 		_orderService = orderService;
 	}
+
 	[HttpPost]
 	public async Task<IActionResult> Create(
 		OrderCreateRequest orderCreateRequest,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		var response = await _orderService.CreateAsync(orderCreateRequest, cancellationToken);
 
 		return Ok(response);
-
 	}
 
 	[HttpPost]
@@ -30,12 +31,12 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> AddProduct(
 		int id,
 		OrderAddProductRequest orderAddProductRequest,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		var response = await _orderService.AddProduct(id, orderAddProductRequest, cancellationToken);
 
 		return Ok(response);
-
 	}
 
 	[HttpPatch]
@@ -44,12 +45,17 @@ public class OrderController : ControllerBase
 		int id,
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderAddProductRequest,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
-		var response = await _orderService.UpdateProductQuantity(id, orderProductId, orderAddProductRequest, cancellationToken);
+		var response = await _orderService.UpdateProductQuantity(
+			id,
+			orderProductId,
+			orderAddProductRequest,
+			cancellationToken
+		);
 
 		return Ok(response);
-
 	}
 
 	[HttpDelete]
@@ -57,12 +63,12 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> RemoveProduct(
 		int id,
 		int orderProductId,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
 
 		return Ok(response);
-
 	}
 
 	[HttpDelete]
@@ -70,11 +76,11 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> CancelOrder(
 		int id,
 		int orderProductId,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken
+	)
 	{
 		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
 
 		return NoContent();
-
 	}
 }
