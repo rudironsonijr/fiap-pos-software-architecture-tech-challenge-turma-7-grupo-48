@@ -1,14 +1,21 @@
 using Domain.Entities.Base.Exceptions;
+using Domain.Entities.ProductAggregate;
 
 namespace Domain.Entities.OrderAggregate;
 
 public class OrderProduct
 {
+	public OrderProduct(Product product)
+	{
+		Product = product;
+		Id = product.Id;
+	}
 	private readonly decimal _productPrice;
 
 	private int _quantity;
-	public int Id { get; init; }
-	public required int ProductId { get; init; }
+	public int Id { get; private init; }
+	public int ProductId { get; init; }
+	public Product Product { get; init; }
 
 	public required decimal ProductPrice
 	{

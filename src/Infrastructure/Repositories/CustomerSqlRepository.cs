@@ -10,10 +10,10 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 {
 	private readonly SqlContext _context;
 
-	public CustomerSqlRepository(SqlContext sqlContext)
-	{
-		_context = sqlContext;
-	}
+	//public CustomerSqlRepository(SqlContext sqlContext)
+	//{
+	//	_context = sqlContext;
+	//}
 
 	public async Task<CustomerSqlModel?> GetAsync(
 		Expression<Func<CustomerSqlModel, bool>> expression,

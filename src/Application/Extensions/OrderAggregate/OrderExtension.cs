@@ -9,7 +9,7 @@ internal static class OrderExtension
 	{
 		List<UpdateOrderProductResponse> orderProductsResponse = [];
 
-		foreach(var orderProduct in order.Products) {
+		foreach(var orderProduct in order.OrderProducts) {
 			var updateOrderProduct = orderProduct.ToUpdateOrderProductResponse();
 			orderProductsResponse.Add(updateOrderProduct);
 		}
@@ -18,10 +18,31 @@ internal static class OrderExtension
 		{
 			OrderId = order.Id,
 			Price = order.Price,
-			OrderProduct = orderProductsResponse
+			OrderProducts = orderProductsResponse
 		};
 
 		return response;
 
+	}
+
+	public static GetOrderResponse ToGetOrderResponse(this Order order)
+	{
+		List<GetOrderProductReponse> orderProductsResponse = [];
+
+		foreach (var orderProduct in order.OrderProducts)
+		{
+			var getOrderProduct = orderProduct.ToGetOrderProductReponse();
+			orderProductsResponse.Add(getOrderProduct);
+		}
+
+		GetOrderResponse response = new()
+		{
+			Id = order.Id,
+			Price = order.Price,
+			OrderProducts = orderProductsResponse,
+			Status = order.Status,
+		};
+
+		return response;
 	}
 }

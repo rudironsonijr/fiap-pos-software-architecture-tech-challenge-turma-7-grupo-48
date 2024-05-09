@@ -1,6 +1,6 @@
 namespace Application.Dtos.OrderResponse;
 
-public record OrderCreateResponse
+public record CreateOrderResponse
 {
 	public int OrderId { get; set; }
 }

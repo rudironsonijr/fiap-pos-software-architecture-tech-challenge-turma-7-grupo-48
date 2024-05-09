@@ -28,9 +28,16 @@ public class OrderService : IOrderService
 		_productRepository = productRepository;
 		_notificationContext = notificationContext;
 	}
+	public async Task<GetOrderResponse?> GetAsync(int id, CancellationToken cancellationToken)
+	{
+		var order = await _orderRepository.GetAsync(id, cancellationToken);
 
-	public async Task<OrderCreateResponse> CreateAsync(
-		OrderCreateRequest orderCreateRequest,
+		return
+			order.ToGetOrderResponse();
+	}
+
+	public async Task<CreateOrderResponse?> CreateAsync(
+		CreateOrderRequest orderCreateRequest,
 		CancellationToken cancellationToken
 	)
 	{
@@ -40,7 +47,7 @@ public class OrderService : IOrderService
 		if (orderCreateRequest.CustomerId != null)
 		{
 			customer = await _customerRepository.GetAsync(orderCreateRequest.CustomerId, cancellationToken);
-			_notificationContext.AssertArgumentNotNull(customer, $"Customer with id:{orderCreateRequest.CustomerId} not found");
+			_notificationContext.AssertArgumentNotNull(customer, $"Customer with id: {orderCreateRequest.CustomerId} not found");
 		}
 
 		_notificationContext.AssertArgumentNotNull(product, $"Product with id:{orderCreateRequest.Product.ProductId} not found");
@@ -60,7 +67,7 @@ public class OrderService : IOrderService
 
 		order = await _orderRepository.CreateAsync(order, cancellationToken);
 
-		OrderCreateResponse response = new()
+		CreateOrderResponse response = new()
 		{
 			OrderId = order.Id
 		};
@@ -105,7 +112,7 @@ public class OrderService : IOrderService
 	)
 	{
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
-		var orderProduct = order?.Products
+		var orderProduct = order?.OrderProducts
 			.Where(p => p.Id == orderProductId)
 			.FirstOrDefault();
 
@@ -136,7 +143,7 @@ public class OrderService : IOrderService
 	{
 
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
-		var orderProduct = order?.Products
+		var orderProduct = order?.OrderProducts
 			.Where(p => p.Id == orderProductId)
 			.FirstOrDefault();
 

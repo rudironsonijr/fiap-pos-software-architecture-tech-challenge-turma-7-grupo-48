@@ -44,12 +44,12 @@ public class Product : IAggregateRoot
 		}
 	}
 
-	public ProductType ProductType
+	public required ProductType ProductType
 	{
 		get => _productType;
 		init
 		{
-			if (ProductType == ProductType.None)
+			if (value == ProductType.None)
 				throw new EntityArgumentEnumInvalidException(
 					nameof(ProductType),
 					ProductType.None.ToString(),
@@ -60,7 +60,7 @@ public class Product : IAggregateRoot
 		}
 	}
 
-	public decimal Price
+	public required decimal Price
 	{
 		get => _price;
 		set

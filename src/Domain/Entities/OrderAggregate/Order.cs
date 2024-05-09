@@ -24,7 +24,7 @@ public class Order : IAggregateRoot
 	public int Id { get; init; }
 	public int? CustomerId { get; init; }
 	public OrderStatus Status { get; private set; } = OrderStatus.Creating;
-	public IReadOnlyCollection<OrderProduct> Products => _orderProducts.AsReadOnly();
+	public IReadOnlyCollection<OrderProduct> OrderProducts => _orderProducts.AsReadOnly();
 
 	public decimal Price
 	{
@@ -50,9 +50,10 @@ public class Order : IAggregateRoot
 			return this;
 		}
 
-		OrderProduct orderProduct = new()
+		OrderProduct orderProduct = new(product)
 		{
-			ProductId = product.Id, ProductPrice = product.Price, Quantity = quantity
+			ProductPrice = product.Price, 
+			Quantity = quantity
 		};
 
 		_orderProducts.Add(orderProduct);

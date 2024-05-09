@@ -5,8 +5,13 @@ namespace Application.Services.Interfaces;
 
 public interface IOrderService
 {
-	Task<OrderCreateResponse> CreateAsync(
-		OrderCreateRequest orderCreateRequest,
+	Task<GetOrderResponse?> GetAsync(
+		int id,
+		CancellationToken cancellationToken
+	);
+
+	Task<CreateOrderResponse?> CreateAsync(
+		CreateOrderRequest orderCreateRequest,
 		CancellationToken cancellationToken
 	);
 

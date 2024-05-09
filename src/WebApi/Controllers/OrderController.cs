@@ -1,4 +1,5 @@
 using Application.Dtos.OrderRequest;
+using Application.Dtos.OrderResponse;
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,20 +16,36 @@ public class OrderController : ControllerBase
 		_orderService = orderService;
 	}
 
+	[ProducesResponseType(typeof(IEnumerable<CreateOrderResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[HttpGet]
+	public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
+	{
+		var response = await _orderService.GetAsync(id, cancellationToken);
+
+		if (response == null)
+		{
+			return NotFound();
+		}
+
+		return Ok(response);
+	}
+
+	[ProducesResponseType(typeof(IEnumerable<CreateOrderResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
-	public async Task<IActionResult> Create(
-		OrderCreateRequest orderCreateRequest,
-		CancellationToken cancellationToken
-	)
+	public async Task<IActionResult> Create(CreateOrderRequest orderCreateRequest, CancellationToken cancellationToken)
 	{
 		var response = await _orderService.CreateAsync(orderCreateRequest, cancellationToken);
 
 		return Ok(response);
 	}
 
+	[ProducesResponseType(typeof(IEnumerable<OrderUpdateOrderProductResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
 	[Route("{id}/product")]
-	public async Task<IActionResult> AddProduct(
+	public async Task<IActionResult> AddProductAsync(
 		int id,
 		OrderAddProductRequest orderAddProductRequest,
 		CancellationToken cancellationToken
@@ -39,9 +56,11 @@ public class OrderController : ControllerBase
 		return Ok(response);
 	}
 
+	[ProducesResponseType(typeof(IEnumerable<OrderUpdateOrderProductResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPatch]
 	[Route("{id}/order-product/{orderProductId}")]
-	public async Task<IActionResult> UpdateProductQuantity(
+	public async Task<IActionResult> UpdateProductQuantityAsync(
 		int id,
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderAddProductRequest,
@@ -58,28 +77,23 @@ public class OrderController : ControllerBase
 		return Ok(response);
 	}
 
+	[ProducesResponseType(typeof(IEnumerable<OrderUpdateOrderProductResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpDelete]
 	[Route("{orderId}/order-product/{orderProductId}")]
-	public async Task<IActionResult> RemoveProduct(
-		int id,
-		int orderProductId,
-		CancellationToken cancellationToken
-	)
+	public async Task<IActionResult> RemoveProductAsync(int id, int orderProductId, CancellationToken cancellationToken)
 	{
 		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
-
 		return Ok(response);
 	}
 
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpDelete]
 	[Route("{orderId}")]
-	public async Task<IActionResult> CancelOrder(
-		int id,
-		int orderProductId,
-		CancellationToken cancellationToken
-	)
+	public async Task<IActionResult> CancelOrderAsync(int id, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
+		await _orderService.CancelOrder(id, cancellationToken);
 
 		return NoContent();
 	}

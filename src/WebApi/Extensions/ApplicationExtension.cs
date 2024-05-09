@@ -17,7 +17,8 @@ public static class ApplicationExtension
 	private static IServiceCollection AddServices(this IServiceCollection services)
 	{
 		return services
-			.AddScoped<IProductService, ProductService>();
+			.AddScoped<IProductService, ProductService>()
+			.AddScoped<IOrderService, OrderService>();
 	}
 
 	private static IServiceCollection AddNotifications(this IServiceCollection services)
