@@ -1,52 +1,58 @@
-using Domain.Entities.Exceptions;
+using Domain.Entities.Base.Exceptions;
+using Domain.Entities.Base.Interfaces;
 using Domain.ValueObjects;
 
 namespace Domain.Entities.CustomerAggregate;
 
-public class Customer
+public class Customer : IAggregateRoot
 {
+	private readonly Cpf _cpf;
+
+	private readonly Email _email;
+
+	private readonly string _name = string.Empty;
 	public int Id { get; init; }
 
-	private string _name = string.Empty;
 	public required string Name
 	{
 		get => _name;
 		init
 		{
 			EntityArgumentNullException.ThrowIfNullOrWhiteSpace(
-				value, 
-				nameof(Name), 
-				GetType());
+				value,
+				nameof(Name),
+				GetType()
+			);
 
 			_name = value;
 		}
 	}
 
-	private Email _email;
 	public required Email Email
 	{
 		get => _email;
 		init
 		{
 			EntityArgumentNullException.ThrowIfPropertyNull(
-				value, 
-				nameof(Email), 
-				GetType());
+				value,
+				nameof(Email),
+				GetType()
+			);
 
 			_email = value;
 		}
 	}
 
-	private Cpf _cpf;
 	public required Cpf Cpf
 	{
 		get => _cpf;
 		init
 		{
 			EntityArgumentNullException.ThrowIfPropertyNull(
-				value, 
-				nameof(Email), 
-				GetType());
+				value,
+				nameof(Email),
+				GetType()
+			);
 
 			_cpf = value;
 		}

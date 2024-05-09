@@ -34,11 +34,11 @@ public struct Email
 		{
 			// Normalize the domain
 			email = Regex.Replace(
-				input: email,
-				pattern: @"(@)(.+)$",
-				evaluator: DomainMapper,
-				options: RegexOptions.None,
-				matchTimeout: TimeSpan.FromMilliseconds(200)
+				email,
+				@"(@)(.+)$",
+				DomainMapper,
+				RegexOptions.None,
+				TimeSpan.FromMilliseconds(200)
 			);
 
 			// Examines the domain part of the email and normalizes it.
@@ -65,10 +65,10 @@ public struct Email
 		try
 		{
 			return Regex.IsMatch(
-				input: email,
-				pattern: @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-				options: RegexOptions.IgnoreCase,
-				matchTimeout: TimeSpan.FromMilliseconds(250)
+				email,
+				@"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+				RegexOptions.IgnoreCase,
+				TimeSpan.FromMilliseconds(250)
 			);
 		}
 		catch (RegexMatchTimeoutException)

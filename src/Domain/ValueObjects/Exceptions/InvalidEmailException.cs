@@ -1,11 +1,13 @@
-﻿namespace Domain.ValueObjects.Exceptions;
+﻿using Domain.Exceptions;
+
+namespace Domain.ValueObjects.Exceptions;
 
 public class InvalidEmailException(
 	string address
-) : Exception(
-	message: string.Format(
-		format: DefaultInvalidEmailMessageTemplate,
-		arg0: address
+) : DomainException(
+	string.Format(
+		DefaultInvalidEmailMessageTemplate,
+		address
 	)
 )
 {

@@ -1,4 +1,5 @@
-﻿using Domain.Repositories;
+using Domain.Repositories;
+using Infrastructure.Adapters;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 
@@ -22,6 +23,8 @@ internal static class InfrastructureExtension
 	private static IServiceCollection AddAdapters(this IServiceCollection services)
 	{
 		return services
-			.AddScoped<ICustomerRepository, CustomerRepositoryAdapter>();
+			.AddScoped<ICustomerRepository, CustomerRepositoryAdapter>()
+			.AddScoped<IProductRepository, ProductRepositoryAdapter>()
+			.AddScoped<IOrderRepository, OrderRepositoryAdpater>();
 	}
 }

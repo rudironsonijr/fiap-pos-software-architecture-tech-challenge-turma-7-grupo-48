@@ -2,6 +2,6 @@
 
 namespace WebApi.Controllers;
 
-[Route(template: "api/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class CustomerController : ControllerBase { }

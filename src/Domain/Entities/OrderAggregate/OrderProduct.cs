@@ -1,48 +1,58 @@
-using Domain.Entities.Exceptions;
+using Domain.Entities.Base.Exceptions;
+using Domain.Entities.ProductAggregate;
 
-namespace Domain.Entities.OrderAggregate
+namespace Domain.Entities.OrderAggregate;
+
+public class OrderProduct
 {
-	public class OrderProduct
+	public OrderProduct(Product product)
 	{
-		public int Id { get; init; }
-		public required int ProductId { get; init; }
+		Product = product;
+		Id = product.Id;
+	}
+	private readonly decimal _productPrice;
 
-		private decimal _productPrice;
-		public required decimal ProductPrice
+	private int _quantity;
+	public int Id { get; private init; }
+	public int ProductId { get; init; }
+	public Product Product { get; init; }
+
+	public required decimal ProductPrice
+	{
+		get => _productPrice;
+		init
 		{
-			get => _productPrice;
-			init
-			{
-				EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
-					value,
-					nameof(ProductPrice),
-					GetType());
+			EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
+				value,
+				nameof(ProductPrice),
+				GetType()
+			);
 
-				_productPrice = value;
-			}
+			_productPrice = value;
 		}
+	}
 
-		private int _quantity;
-		public required int Quantity
+	public required int Quantity
+	{
+		get => _quantity;
+		set
 		{
-			get => _quantity;
-			set
-			{
-				EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
-					value,
-					nameof(Quantity),
-					GetType());
+			EntityArgumentNumberInvalidException.ThrowIfLessOrEqualZero(
+				value,
+				nameof(Quantity),
+				GetType()
+			);
 
-				_quantity = value;
-			}
+			_quantity = value;
 		}
-		public decimal Price
+	}
+
+	public decimal Price
+	{
+		get
 		{
-			get
-			{
-				var total = _productPrice * _quantity;
-				return Math.Round(total, 2);
-			}
+			var total = _productPrice * _quantity;
+			return Math.Round(total, 2);
 		}
 	}
 }

@@ -1,8 +1,7 @@
-namespace Application.Dtos.ProductRequest
+namespace Application.Dtos.ProductRequest;
+
+public record ProductUpdatePriceRequest
 {
-	public record ProductUpdatePriceRequest
-	{
-		public int Id { get; set; }
-		public decimal Price { get; set; }
-	}
+	public int Id { get; set; }
+	public decimal Price { get; set; }
 }

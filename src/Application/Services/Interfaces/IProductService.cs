@@ -1,5 +1,3 @@
 namespace Application.Services.Interfaces;
 
-public interface IProductService
-{
-}
+public interface IProductService { }

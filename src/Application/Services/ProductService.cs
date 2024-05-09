@@ -8,29 +8,36 @@ namespace Application.Services;
 
 public class ProductService : IProductService
 {
-	public IProductRepository _productRepository { get; set; }
 	public ProductService(IProductRepository productRepository)
 	{
 		_productRepository = productRepository;
 	}
-	public async Task<ProductCreateResponse> CreateAsync(ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
+
+	public IProductRepository _productRepository { get; set; }
+
+	public async Task<ProductCreateResponse> CreateAsync(
+		ProductCreateRequest productCreateRequest,
+		CancellationToken cancellationToken
+	)
 	{
 		//ToDo: Implementar validações
-		var product = productCreateRequest.ToProduct();	
+		var product = productCreateRequest.ToProduct();
 		product = await _productRepository.CreateAsync(product, cancellationToken);
 		ProductCreateResponse response = new()
 		{
-			Id = product.Id,
+			Id = product.Id
 		};
 		return response;
 	}
 
-	public async Task UpdatePriceAsync(ProductUpdatePriceRequest productUpdatePrice, CancellationToken cancellationToken)
+	public async Task UpdatePriceAsync(
+		ProductUpdatePriceRequest productUpdatePrice,
+		CancellationToken cancellationToken
+	)
 	{
 		//ToDo: Implementar validações
 		var product = await _productRepository.GetAsync(productUpdatePrice.Id, cancellationToken);
 		product.Price = productUpdatePrice.Price;
 		await _productRepository.UpdateAsync(product, cancellationToken);
-		
 	}
 }
