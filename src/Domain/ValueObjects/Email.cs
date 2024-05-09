@@ -60,7 +60,7 @@ public struct Email
 		try
 		{
 			return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", 
-				RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250);
+				RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
 		}
 		catch (RegexMatchTimeoutException)
 		{
