@@ -15,4 +15,9 @@ public interface ICustomerRepository
 	Task<Customer> CreateAsync(
 		Customer id,
 		CancellationToken cancellationToken);
+
+	Task<bool> ExistsByCpf(
+		string? cpf,
+		CancellationToken cancellationToken);
+
 }

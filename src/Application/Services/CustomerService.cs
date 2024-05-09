@@ -41,6 +41,13 @@ public class CustomerService : ICustomerService
 		_notificationContext.AssertArgumentInvalidCpf(createCustomerRequest.Cpf);
 		_notificationContext.AssertArgumentInvalidEmail(createCustomerRequest.Email);
 
+		var cpfAlreadyExist = await _customerRepository.ExistsByCpf(createCustomerRequest.Cpf, cancellationToken);
+		if (cpfAlreadyExist)
+		{
+			_notificationContext.AddNotification($"CPF {createCustomerRequest.Cpf} already exists!");
+		}
+
+	
 		if(_notificationContext.HasErrors)
 		{
 			return null;
