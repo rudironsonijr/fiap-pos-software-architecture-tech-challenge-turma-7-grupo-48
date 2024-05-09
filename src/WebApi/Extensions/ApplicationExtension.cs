@@ -1,5 +1,6 @@
 using Application.Services;
 using Application.Services.Interfaces;
+using Core.Notifications;
 
 namespace WebApi.Extensions;
 
@@ -15,5 +16,11 @@ public static class ApplicationExtension
 	{
 		return services
 			.AddScoped<IProductService, ProductService>();
+	}
+
+	private static IServiceCollection AddNotifications(this IServiceCollection services)
+	{
+		return services
+			.AddScoped<NotificationContext>();
 	}
 }
