@@ -14,13 +14,20 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 		_customerSqlRepository = customerSqlRepository;
 	}
 
-	public async Task<Customer?> GetByCpf(
-		string cpf,
-		CancellationToken cancellationToken
-	)
+	public async Task<Customer?> GetByCpf(string cpf, CancellationToken cancellationToken)
 	{
 		var customerSql = await _customerSqlRepository.GetAsync(
 			customer => customer.Cpf.Equals(cpf),
+			cancellationToken
+		);
+
+		return customerSql?.ToCustomer();
+	}
+
+	public async Task<Customer?> GetAsync(string id, CancellationToken cancellationToken)
+	{
+		var customerSql = await _customerSqlRepository.GetAsync(
+			customer => customer.Id.Equals(id),
 			cancellationToken
 		);
 

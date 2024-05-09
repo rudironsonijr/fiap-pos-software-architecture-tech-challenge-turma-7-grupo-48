@@ -24,7 +24,7 @@ public class NotificationContext
 		}
 	}
 
-	public void AssertArgumentNotNull(object object1, string message)
+	public void AssertArgumentNotNull(object? object1, string message)
 	{
 		if (object1 == null)
 		{

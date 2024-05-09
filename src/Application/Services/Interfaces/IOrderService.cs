@@ -10,19 +10,19 @@ public interface IOrderService
 		CancellationToken cancellationToken
 	);
 
-	Task<OrderUpdateProductResponse> AddProduct(
+	Task<OrderUpdateOrderProductResponse?> AddProduct(
 		int OrderId,
 		OrderAddProductRequest orderAddProductRequest,
 		CancellationToken cancellationToken
 	);
 
-	Task<OrderUpdateProductResponse> RemoveProduct(
+	Task<OrderUpdateOrderProductResponse?> RemoveProduct(
 		int orderId,
 		int orderProductId,
 		CancellationToken cancellationToken
 	);
 
-	Task<OrderUpdateProductResponse> UpdateProductQuantity(
+	Task<OrderUpdateOrderProductResponse?> UpdateProductQuantity(
 		int orderId,
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderUpdateProductQuantityRequest,

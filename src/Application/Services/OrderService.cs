@@ -1,6 +1,8 @@
 using Application.Dtos.OrderRequest;
 using Application.Dtos.OrderResponse;
+using Application.Extensions.OrderAggregate;
 using Application.Services.Interfaces;
+using Core.Notifications;
 using Domain.Entities.CustomerAggregate;
 using Domain.Entities.OrderAggregate;
 using Domain.Repositories;
@@ -12,16 +14,19 @@ public class OrderService : IOrderService
 	private readonly ICustomerRepository _customerRepository;
 	private readonly IOrderRepository _orderRepository;
 	private readonly IProductRepository _productRepository;
+	private readonly NotificationContext _notificationContext;
 
 	public OrderService(
 		IOrderRepository orderRepository,
 		ICustomerRepository customerRepository,
-		IProductRepository productRepository
+		IProductRepository productRepository,
+		NotificationContext notificationContext
 	)
 	{
 		_orderRepository = orderRepository;
 		_customerRepository = customerRepository;
 		_productRepository = productRepository;
+		_notificationContext = notificationContext;
 	}
 
 	public async Task<OrderCreateResponse> CreateAsync(
@@ -29,31 +34,29 @@ public class OrderService : IOrderService
 		CancellationToken cancellationToken
 	)
 	{
-		//Todo: Validar se a OrderAddProduct não veio vazia
-		var customerTask = GetCustomer(
-			orderCreateRequest.CustomerCpf,
-			cancellationToken
-		);
-		var productTask = _productRepository.GetAsync(
-			orderCreateRequest.Product.ProductId,
-			cancellationToken
-		);
+		Customer? customer = null;
+		var product = await _productRepository.GetAsync(orderCreateRequest.Product.ProductId, cancellationToken);
 
-		await Task.WhenAll(productTask, customerTask);
+		if (orderCreateRequest.CustomerId != null)
+		{
+			customer = await _customerRepository.GetAsync(orderCreateRequest.CustomerId, cancellationToken);
+			_notificationContext.AssertArgumentNotNull(customer, $"Customer with id:{orderCreateRequest.CustomerId} not found");
+		}
 
-		//ToDo: validar caso produto não encontrado
-		var product = productTask.Result;
-		var customer = customerTask.Result;
+		_notificationContext.AssertArgumentNotNull(product, $"Product with id:{orderCreateRequest.Product.ProductId} not found");
+		_notificationContext.AssertArgumentMinimumLength(orderCreateRequest.Product.Quantity, 1, "The minimun quantity is 1");
+
+		if (_notificationContext.HasErrors)
+		{
+			return null;
+		}
 
 		Order order = new()
 		{
-			CustomerId = customer?.Id
+			CustomerId = customer?.Id,
 		};
 
-		order.AddProduct(
-			product,
-			orderCreateRequest.Product.Quantity
-		);
+		order.AddProduct(product, orderCreateRequest.Product.Quantity);
 
 		order = await _orderRepository.CreateAsync(order, cancellationToken);
 
@@ -61,101 +64,113 @@ public class OrderService : IOrderService
 		{
 			OrderId = order.Id
 		};
-		throw new NotImplementedException();
 		return response;
 	}
 
-	public async Task<OrderUpdateProductResponse> AddProduct(
+	public async Task<OrderUpdateOrderProductResponse?> AddProduct(
 		int orderId,
 		OrderAddProductRequest orderAddProductRequest,
 		CancellationToken cancellationToken
 	)
 	{
 		var orderTask = _orderRepository.GetAsync(orderId, cancellationToken);
-		var productTask = _productRepository.GetAsync(
-			orderAddProductRequest.ProductId,
-			cancellationToken
-		);
+		var productTask = _productRepository.GetAsync(orderAddProductRequest.ProductId, cancellationToken);
 
 		await Task.WhenAll(productTask, orderTask);
 
-		//ToDo: validar caso order não encontrado
 		var order = orderTask.Result;
-		//ToDo: validar caso produto não encontrado
 		var product = productTask.Result;
+
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
+		_notificationContext.AssertArgumentNotNull(product, $"Product with id:{orderAddProductRequest.ProductId} not found");
+		_notificationContext.AssertArgumentMinimumLength(orderId, 1, "The minimun quantity is 1");
+
+		if (_notificationContext.HasErrors)
+		{
+			return null;
+		}
 
 		order.AddProduct(product, orderAddProductRequest.Quantity);
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
-		throw new NotImplementedException();
-		//ToDo: Fazer o mapeamento do response
-		return new OrderUpdateProductResponse();
+		return
+			order.ToOrderUpdateProductResponse();
 	}
 
-	public async Task<OrderUpdateProductResponse> RemoveProduct(
+	public async Task<OrderUpdateOrderProductResponse?> RemoveProduct(
 		int orderId,
 		int orderProductId,
 		CancellationToken cancellationToken
 	)
 	{
-		//ToDo: validar caso order não encontrado
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+		var orderProduct = order?.Products
+			.Where(p => p.Id == orderProductId)
+			.FirstOrDefault();
 
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
+		_notificationContext.AssertArgumentNotNull(orderProduct, $"orderProduct with id:{orderId} not found");
+
+		if (_notificationContext.HasErrors)
+		{
+			return null;
+		}
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 		order.RemoveProduct(orderProductId);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
-		throw new NotImplementedException();
-		//ToDo: Fazer o mapeamento do response
-		return new OrderUpdateProductResponse();
+		return
+			order.ToOrderUpdateProductResponse();
 	}
 
-	public async Task<OrderUpdateProductResponse> UpdateProductQuantity(
+	public async Task<OrderUpdateOrderProductResponse?> UpdateProductQuantity(
 		int orderId,
 		int orderProductId,
 		OrderUpdateProductQuantityRequest orderUpdateProductQuantityRequest,
 		CancellationToken cancellationToken
 	)
 	{
-		//ToDo: validar caso order não encontrado
-		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
 
+		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+		var orderProduct = order?.Products
+			.Where(p => p.Id == orderProductId)
+			.FirstOrDefault();
+
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
+		_notificationContext.AssertArgumentNotNull(orderProduct, $"orderProduct with id:{orderId} not found");
+
+		if (_notificationContext.HasErrors)
+		{
+			return null;
+		}
+
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 		order.UpdateProductQuantity(orderProductId, orderUpdateProductQuantityRequest.Quantity);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
-		throw new NotImplementedException();
-		//ToDo: Fazer o mapeamento do response
-		return new OrderUpdateProductResponse();
+		return order
+			.ToOrderUpdateProductResponse();
 	}
 
-	public async Task CancelOrder(
-		int orderId,
-		CancellationToken cancellationToken
-	)
+	public async Task CancelOrder(int orderId, CancellationToken cancellationToken)
 	{
-		//ToDo: validar caso order não encontrado
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
+
+		if (_notificationContext.HasErrors)
+		{
+			return;
+		}
 
 		order.ChangeStatusToCancelled();
 
 		await _orderRepository.UpdateAsync(order, cancellationToken);
-	}
-
-	private async Task<Customer?> GetCustomer(
-		string? cpf,
-		CancellationToken cancellationToken
-	)
-	{
-		if (string.IsNullOrEmpty(cpf))
-			return null;
-
-		var customer = await _customerRepository.GetByCpf(cpf, cancellationToken);
-		if (customer == null)
-			//ToDo: Implementar validação caso não encontre o Customer
-			throw new NotImplementedException();
-
-		return customer;
 	}
 }

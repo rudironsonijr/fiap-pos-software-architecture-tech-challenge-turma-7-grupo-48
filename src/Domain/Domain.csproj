@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<ItemGroup>
-		<ProjectReference Include="..\Helpers\Helpers.csproj"/>
+		<ProjectReference Include="..\Helpers\Helpers.csproj" />
 	</ItemGroup>
 </Project>

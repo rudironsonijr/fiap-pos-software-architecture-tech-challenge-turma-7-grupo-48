@@ -6,6 +6,9 @@ public interface ICustomerRepository
 {
 	Task<Customer?> GetByCpf(
 		string cpf,
-		CancellationToken cancellationToken
-	);
+		CancellationToken cancellationToken);
+
+	Task<Customer?> GetAsync(
+		string id,
+		CancellationToken cancellationToken);
 }
