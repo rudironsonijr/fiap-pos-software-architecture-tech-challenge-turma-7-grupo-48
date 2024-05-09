@@ -33,7 +33,7 @@ public class OrderService : IOrderService
 		var order = await _orderRepository.GetAsync(id, cancellationToken);
 
 		return
-			order.ToGetOrderResponse();
+			order?.ToGetOrderResponse();
 	}
 
 	public async Task<CreateOrderResponse?> CreateAsync(

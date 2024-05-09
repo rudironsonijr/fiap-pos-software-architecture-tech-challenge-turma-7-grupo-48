@@ -1,3 +1,5 @@
+using Domain.ValueObjects;
+
 namespace Core.Notifications;
 
 public class NotificationContext
@@ -27,6 +29,30 @@ public class NotificationContext
 	public void AssertArgumentNotNull(object? object1, string message)
 	{
 		if (object1 == null)
+		{
+			AddNotification(message);
+		}
+	}
+
+	public void AssertArgumentInvalidCpf(string cpf)
+	{
+		if (cpf == null || !Cpf.IsValidCpf(cpf))
+		{
+			AddNotification($"The CPF: {cpf} is invalid");
+		}
+	}
+
+	public void AssertArgumentInvalidEmail(string email)
+	{
+		if (email == null || !Email.IsValidEmail(email))
+		{
+			AddNotification($"The E-Mail: {email} is invalid");
+		}
+	}
+
+	public void AssertArgumentNotNullOrWhiteSpace(string stringValue, string message)
+	{
+		if (!string.IsNullOrWhiteSpace(stringValue))
 		{
 			AddNotification(message);
 		}

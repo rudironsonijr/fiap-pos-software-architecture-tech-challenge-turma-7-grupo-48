@@ -16,9 +16,11 @@ public class OrderController : ControllerBase
 		_orderService = orderService;
 	}
 
-	[ProducesResponseType(typeof(IEnumerable<CreateOrderResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(IEnumerable<GetOrderResponse>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[HttpGet]
+	[Route("{id}")]
 	public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
 	{
 		var response = await _orderService.GetAsync(id, cancellationToken);
