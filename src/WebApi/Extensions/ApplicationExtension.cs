@@ -9,7 +9,9 @@ public static class ApplicationExtension
 	public static IServiceCollection AddAplication(this IServiceCollection services)
 	{
 		return
-			services.AddServices();
+			services
+				.AddServices()
+				.AddNotifications();
 	}
 
 	private static IServiceCollection AddServices(this IServiceCollection services)
