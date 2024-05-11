@@ -1,5 +1,5 @@
-using Domain.Entities.Base.Exceptions;
 using Domain.Entities.Base.Interfaces;
+using Domain.Entities.Exceptions;
 using Domain.ValueObjects;
 
 namespace Domain.Entities.CustomerAggregate;

@@ -1,6 +1,6 @@
 using Domain.Exceptions;
 
-namespace Domain.Entities.Base.Exceptions;
+namespace Domain.Entities.Exceptions;
 
 internal class EntityArgumentNumberInvalidException : DomainException
 {
@@ -23,7 +23,8 @@ internal class EntityArgumentNumberInvalidException : DomainException
 				defaultValue,
 				entityName
 			)
-		) { }
+		)
+	{ }
 
 	public static void ThrowIfLessOrEqualZero(
 		decimal compareValue,

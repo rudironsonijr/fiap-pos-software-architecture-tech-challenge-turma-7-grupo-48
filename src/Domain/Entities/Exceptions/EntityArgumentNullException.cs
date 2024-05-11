@@ -1,6 +1,6 @@
 using Domain.Exceptions;
 
-namespace Domain.Entities.Base.Exceptions;
+namespace Domain.Entities.Exceptions;
 
 internal class EntityArgumentNullException(
 	string propertyName,
@@ -62,7 +62,7 @@ internal class EntityArgumentNullException(
 	)
 	{
 		if (value is null ||
-		    value.Any())
+			value.Any())
 			throw new EntityArgumentNullException(
 				propertyName,
 				entityType.ToString()

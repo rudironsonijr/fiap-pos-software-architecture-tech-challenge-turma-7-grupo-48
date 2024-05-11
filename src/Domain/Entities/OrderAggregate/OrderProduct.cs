@@ -1,4 +1,4 @@
-using Domain.Entities.Base.Exceptions;
+using Domain.Entities.Exceptions;
 using Domain.Entities.ProductAggregate;
 
 namespace Domain.Entities.OrderAggregate;
