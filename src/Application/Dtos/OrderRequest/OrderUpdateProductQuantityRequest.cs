@@ -1,6 +1,6 @@
 namespace Application.Dtos.OrderRequest;
 
-public class OrderUpdateProductQuantityRequest
+public record OrderUpdateProductQuantityRequest
 {
 	public int Quantity { get; set; }
 }

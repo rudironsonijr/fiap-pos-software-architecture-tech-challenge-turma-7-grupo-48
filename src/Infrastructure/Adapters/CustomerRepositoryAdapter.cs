@@ -33,4 +33,9 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 
 		return customerSql?.ToCustomer();
 	}
+
+	public async Task<Customer> CreateAsync(Customer id, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
 }

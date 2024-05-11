@@ -11,4 +11,13 @@ public interface ICustomerRepository
 	Task<Customer?> GetAsync(
 		string id,
 		CancellationToken cancellationToken);
+
+	Task<Customer> CreateAsync(
+		Customer id,
+		CancellationToken cancellationToken);
+
+	Task<bool> ExistsByCpf(
+		string? cpf,
+		CancellationToken cancellationToken);
+
 }
