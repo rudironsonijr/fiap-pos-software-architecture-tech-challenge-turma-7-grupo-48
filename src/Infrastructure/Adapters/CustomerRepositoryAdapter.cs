@@ -38,4 +38,9 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 	{
 		throw new NotImplementedException();
 	}
+
+	public Task<bool> ExistsByCpf(string? cpf, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
 }
