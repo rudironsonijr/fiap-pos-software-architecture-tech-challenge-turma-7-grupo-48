@@ -1,5 +1,7 @@
 using Domain.Entities.CustomerAggregate;
 using Domain.Repositories;
+using Domain.ValueObjects;
+using Infrastructure.Extensions.Entities;
 using Infrastructure.Repositories.Interfaces;
 using Infrastructure.SqlModels.Extensions;
 
@@ -14,12 +16,11 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 		_customerSqlRepository = customerSqlRepository;
 	}
 
-	public async Task<Customer?> GetByCpf(string cpf, CancellationToken cancellationToken)
+	public async Task<Customer?> GetByCpf(Cpf cpf, CancellationToken cancellationToken)
 	{
 		var customerSql = await _customerSqlRepository.GetAsync(
-			customer => customer.Cpf.Equals(cpf),
-			cancellationToken
-		);
+			customer => customer.Cpf.Equals(cpf.FormatedNumber),
+			cancellationToken);
 
 		return customerSql?.ToCustomer();
 	}
@@ -28,19 +29,22 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 	{
 		var customerSql = await _customerSqlRepository.GetAsync(
 			customer => customer.Id.Equals(id),
-			cancellationToken
-		);
+			cancellationToken);
 
 		return customerSql?.ToCustomer();
 	}
 
-	public async Task<Customer> CreateAsync(Customer id, CancellationToken cancellationToken)
+	public Task<int> CreateAsync(Customer customer, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var customerSql = customer.ToCustomerSqlModel();
+		_customerSqlRepository.Add(customerSql);
+		return _customerSqlRepository.UnitOfWork.CommitAsync(cancellationToken);
+
 	}
 
-	public Task<bool> ExistsByCpf(string? cpf, CancellationToken cancellationToken)
+	public async Task<bool> ExistsByCpf(Cpf cpf, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var customer = await _customerSqlRepository.CountAsync(x => x.Cpf.Equals(cpf), cancellationToken);
+		return customer > 0;
 	}
 }

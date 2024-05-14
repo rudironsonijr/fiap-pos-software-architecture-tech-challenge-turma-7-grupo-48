@@ -18,7 +18,7 @@ public class CustomerController : ControllerBase {
 		_customerService = customerService;
 	}
 
-	[ProducesResponseType(typeof(IEnumerable<GetOrderResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(IEnumerable<GetCustomerResponse>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[HttpGet]

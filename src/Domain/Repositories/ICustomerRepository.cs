@@ -1,23 +1,25 @@
 using Domain.Entities.CustomerAggregate;
+using Domain.Repositories.Base;
+using Domain.ValueObjects;
 
 namespace Domain.Repositories;
 
-public interface ICustomerRepository
+public interface ICustomerRepository : IRepository<Customer>
 {
 	Task<Customer?> GetByCpf(
-		string cpf,
+		Cpf cpf,
 		CancellationToken cancellationToken);
 
 	Task<Customer?> GetAsync(
 		string id,
 		CancellationToken cancellationToken);
 
-	Task<Customer> CreateAsync(
+	Task<int> CreateAsync(
 		Customer id,
 		CancellationToken cancellationToken);
 
 	Task<bool> ExistsByCpf(
-		string? cpf,
+		Cpf cpf,
 		CancellationToken cancellationToken);
 
 }

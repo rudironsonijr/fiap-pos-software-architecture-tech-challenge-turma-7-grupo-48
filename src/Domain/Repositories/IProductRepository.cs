@@ -1,8 +1,9 @@
 using Domain.Entities.ProductAggregate;
+using Domain.Repositories.Base;
 
 namespace Domain.Repositories;
 
-public interface IProductRepository
+public interface IProductRepository: IRepository<Product>
 {
 	Task<Product> CreateAsync(
 		Product product,
