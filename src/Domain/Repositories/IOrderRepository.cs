@@ -1,8 +1,9 @@
 using Domain.Entities.OrderAggregate;
+using Domain.Repositories.Base;
 
 namespace Domain.Repositories;
 
-public interface IOrderRepository
+public interface IOrderRepository : IRepository<Order>
 {
 	Task<Order> CreateAsync(
 		Order order,

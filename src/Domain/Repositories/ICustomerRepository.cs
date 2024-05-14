@@ -1,8 +1,9 @@
 using Domain.Entities.CustomerAggregate;
+using Domain.Repositories.Base;
 
 namespace Domain.Repositories;
 
-public interface ICustomerRepository
+public interface ICustomerRepository : IRepository<Customer>
 {
 	Task<Customer?> GetByCpf(
 		string cpf,

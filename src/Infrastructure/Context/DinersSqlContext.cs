@@ -1,3 +1,4 @@
+using Domain.Repositories.Base;
 using Infrastructure.EntityConfigurations;
 using Infrastructure.SqlModels;
 using Microsoft.EntityFrameworkCore;
@@ -5,7 +6,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Context;
 
-public class DinersSqlContext : DbContext
+public class DinersSqlContext : DbContext, IUnitOfWork
 {
 	public DinersSqlContext(DbContextOptions<DinersSqlContext> options) : base(options) { }
 	internal DbSet<CustomerSqlModel> Customer { get; set; }
@@ -29,7 +30,7 @@ public class DinersSqlContext : DbContext
 			SetOperationDate(entityEntry);
 		}
 
-		return 
+		return
 			base.SaveChangesAsync(acceptAllChangesOnSuccess, token);
 	}
 
@@ -41,5 +42,12 @@ public class DinersSqlContext : DbContext
 		{
 			((BaseSqlModel)entityEntry.Entity).CreatedAt = DateTime.Now;
 		}
+	}
+
+	public Task CommitAsync(CancellationToken cancellationToken = default)
+	{
+		return base.SaveChangesAsync(cancellationToken);
+
+
 	}
 }
