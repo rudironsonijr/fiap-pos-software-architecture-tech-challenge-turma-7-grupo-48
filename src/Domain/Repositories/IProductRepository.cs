@@ -5,7 +5,7 @@ namespace Domain.Repositories;
 
 public interface IProductRepository: IRepository<Product>
 {
-	Task<Product> CreateAsync(
+	Task<int> CreateAsync(
 		Product product,
 		CancellationToken cancellationToken
 	);

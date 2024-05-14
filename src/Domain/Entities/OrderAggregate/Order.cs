@@ -7,7 +7,6 @@ namespace Domain.Entities.OrderAggregate;
 
 public class Order : IAggregateRoot
 {
-	private readonly List<OrderProduct> _orderProducts = [];
 	public Order() { }
 
 	public Order(
@@ -24,6 +23,8 @@ public class Order : IAggregateRoot
 	public int Id { get; init; }
 	public int? CustomerId { get; init; }
 	public OrderStatus Status { get; private set; } = OrderStatus.Creating;
+
+	private readonly List<OrderProduct> _orderProducts = [];
 	public IReadOnlyCollection<OrderProduct> OrderProducts => _orderProducts.AsReadOnly();
 
 	public decimal Price

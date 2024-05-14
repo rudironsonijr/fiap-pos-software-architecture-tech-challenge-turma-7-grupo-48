@@ -38,9 +38,9 @@ public class CustomerController : ControllerBase {
 	[ProducesResponseType(typeof(IEnumerable<CreateCustomerResponse>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
-	public async Task<IActionResult> Create(CreateCustomerRequest CreateCustomerRequest, CancellationToken cancellationToken)
+	public async Task<IActionResult> Create(CreateCustomerRequest createCustomerRequest, CancellationToken cancellationToken)
 	{
-		var response = await _customerService.CreateAsync(CreateCustomerRequest, cancellationToken);
+		var response = await _customerService.CreateAsync(createCustomerRequest, cancellationToken);
 
 		return Ok(response);
 	}
