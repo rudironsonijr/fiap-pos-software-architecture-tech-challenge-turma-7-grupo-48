@@ -1,3 +1,5 @@
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace Domain.ValueObjects;
 
 public struct Cpf
@@ -10,7 +12,7 @@ public struct Cpf
 				nameof(number)
 			);
 
-		Number = number;
+		Number = RemoveFormated(number);
 	}
 
 	public string Number { get; }
@@ -28,14 +30,19 @@ public struct Cpf
 		return number.FormatedNumber;
 	}
 
+	public static string RemoveFormated(string number)
+	{
+		return number.Trim()
+			.Replace(".", "")
+			.Replace("-", "");
+	}
+
 	public static bool IsValidCpf(string number)
 	{
 		int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
 		int[] multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
 
-		number = number.Trim()
-			.Replace(".", "")
-			.Replace("-", "");
+		number = RemoveFormated(number);
 
 		if (number.Length != 11)
 		{

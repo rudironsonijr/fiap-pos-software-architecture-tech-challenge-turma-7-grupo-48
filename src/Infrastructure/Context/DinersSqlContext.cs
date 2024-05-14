@@ -44,10 +44,9 @@ public class DinersSqlContext : DbContext, IUnitOfWork
 		}
 	}
 
-	public Task CommitAsync(CancellationToken cancellationToken = default)
+	public Task<int> CommitAsync(CancellationToken cancellationToken = default)
 	{
 		return base.SaveChangesAsync(cancellationToken);
-
 
 	}
 }

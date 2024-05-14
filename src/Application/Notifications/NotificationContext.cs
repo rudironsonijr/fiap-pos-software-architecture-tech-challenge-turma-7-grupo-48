@@ -52,7 +52,7 @@ public class NotificationContext
 
 	public void AssertArgumentNotNullOrWhiteSpace(string stringValue, string message)
 	{
-		if (!string.IsNullOrWhiteSpace(stringValue))
+		if (string.IsNullOrWhiteSpace(stringValue))
 		{
 			AddNotification(message);
 		}

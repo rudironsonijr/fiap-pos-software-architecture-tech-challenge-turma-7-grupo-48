@@ -19,7 +19,9 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 	public async Task<CustomerSqlModel?> GetAsync(Expression<Func<CustomerSqlModel, bool>> expression,
 		CancellationToken cancellationToken)
 	{
-		return await _context.Customer.FindAsync(expression, cancellationToken);
+		return await _context.Customer
+			.AsNoTracking()
+			.SingleOrDefaultAsync(expression, cancellationToken);
 	}
 
 	public Task<int> CountAsync(Expression<Func<CustomerSqlModel, bool>> expression,
@@ -34,11 +36,6 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 			_context.Customer
 			.Add(customer)
 			.Entity;
-	}
-
-	public void Update(CustomerSqlModel customer)
-	{
-		_context.Customer.Update(customer);
 	}
 
 }

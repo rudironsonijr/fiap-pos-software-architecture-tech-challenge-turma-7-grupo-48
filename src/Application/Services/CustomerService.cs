@@ -60,11 +60,11 @@ public class CustomerService : ICustomerService
 			Cpf = createCustomerRequest.Cpf,
 		};
 
-		customer = await _customerRepository.CreateAsync(customer, cancellationToken);
+		var customerId = await _customerRepository.CreateAsync(customer, cancellationToken);
 
 		CreateCustomerResponse response = new()
 		{
-			CustomerId = customer.Id,
+			CustomerId = customerId,
 		};
 		
 		return response;

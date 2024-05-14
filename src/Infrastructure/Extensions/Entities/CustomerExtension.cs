@@ -1,4 +1,4 @@
-﻿using Domain.Entities.CustomerAggregate;
+using Domain.Entities.CustomerAggregate;
 using Infrastructure.SqlModels;
 
 namespace Infrastructure.Extensions.Entities;
@@ -9,7 +9,10 @@ internal static class CustomerExtension
 	{
 		CustomerSqlModel response = new()
 		{
-			Id = customer.Id, Name = customer.Name, Cpf = customer.Cpf, Email = customer.Email
+			Id = customer.Id, 
+			Name = customer.Name, 
+			Cpf = customer.Cpf, 
+			Email = customer.Email
 		};
 
 		return response;

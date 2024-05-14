@@ -10,9 +10,6 @@ internal class CustomerSqlModelEntityTypeConfiguration : IEntityTypeConfiguratio
 	{
 		builder.HasKey(x => x.Id);
 
-		builder.Property(c => c.Id)
-			.UseHiLo();
-
 		builder.Property(c => c.Name)
 			.HasColumnType("varchar(100)")
 			.HasMaxLength(100)
@@ -24,7 +21,7 @@ internal class CustomerSqlModelEntityTypeConfiguration : IEntityTypeConfiguratio
 			.IsRequired();
 
 		builder.Property(c => c.Cpf)
-			.HasColumnType("varchar(11)")
+			.HasColumnType("varchar(14)")
 			.HasMaxLength(100)
 			.IsRequired();
 	}

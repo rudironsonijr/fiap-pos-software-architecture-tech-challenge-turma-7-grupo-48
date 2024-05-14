@@ -4,9 +4,6 @@ using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace WebApi.Extensions;
 
@@ -34,9 +31,9 @@ internal static class InfrastructureExtension
 			.AddScoped<IOrderRepository, OrderRepositoryAdpater>();
 	}
 
-	private static IServiceCollection AddContext(this IServiceCollection services,  IConfiguration configuration)
+	private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
 	{
-		return 
+		return
 			services
 				.AddScoped<DinersSqlContext>()
 				.AddDbContext<DinersSqlContext>(opts =>
