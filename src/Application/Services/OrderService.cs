@@ -124,9 +124,7 @@ public class OrderService : IOrderService
 			return null;
 		}
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-		order.RemoveProduct(orderProductId);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+		order!.RemoveProduct(orderProductId);
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
@@ -155,14 +153,48 @@ public class OrderService : IOrderService
 			return null;
 		}
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-		order.UpdateProductQuantity(orderProductId, orderUpdateProductQuantityRequest.Quantity);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+		order!.UpdateProductQuantity(orderProductId, orderUpdateProductQuantityRequest.Quantity);
+
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
 		return order
 			.ToOrderUpdateProductResponse();
+	}
+
+	public async Task UpdateStatusToDone(int orderId, CancellationToken cancellationToken)
+	{
+
+		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
+
+		if (_notificationContext.HasErrors)
+		{
+			return;
+		}
+
+		order!.ChangeStatusToDone();
+
+		await _orderRepository.UpdateAsync(order, cancellationToken);
+	}
+
+	public async Task UpdateStatusToFinished(int orderId, CancellationToken cancellationToken)
+	{
+
+		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
+
+		if (_notificationContext.HasErrors)
+		{
+			return;
+		}
+
+		order!.ChangeStatusToFinished();
+
+		await _orderRepository.UpdateAsync(order, cancellationToken);
 	}
 
 	public async Task CancelOrder(int orderId, CancellationToken cancellationToken)

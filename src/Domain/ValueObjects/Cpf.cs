@@ -1,5 +1,3 @@
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Domain.ValueObjects;
 
 public struct Cpf
@@ -105,5 +103,17 @@ public struct Cpf
 		digit = digit + remainder;
 
 		return number.EndsWith(digit);
+	}
+
+	public override bool Equals(object? obj)
+	{
+		return obj is Cpf cpf &&
+			   Number == cpf.Number &&
+			   FormatedNumber == cpf.FormatedNumber;
+	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(Number, FormatedNumber);
 	}
 }

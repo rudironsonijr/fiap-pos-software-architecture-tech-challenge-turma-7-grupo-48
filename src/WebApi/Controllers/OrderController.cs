@@ -50,8 +50,7 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> AddProductAsync(
 		int id,
 		OrderAddProductRequest orderAddProductRequest,
-		CancellationToken cancellationToken
-	)
+		CancellationToken cancellationToken)
 	{
 		var response = await _orderService.AddProduct(id, orderAddProductRequest, cancellationToken);
 
@@ -77,6 +76,29 @@ public class OrderController : ControllerBase
 		);
 
 		return Ok(response);
+	}
+
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[HttpPatch]
+	[Route("{id}/status/done")]
+	public async Task<IActionResult> UpdateStatusToDone(int id, CancellationToken cancellationToken)
+	{
+		await _orderService.UpdateStatusToDone(id, cancellationToken);
+
+		return NoContent();
+	}
+
+
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[HttpPatch]
+	[Route("{id}/status/finished")]
+	public async Task<IActionResult> UpdateStatusToFinished(int id, CancellationToken cancellationToken)
+	{
+		await _orderService.UpdateStatusToFinished(id, cancellationToken);
+
+		return NoContent();
 	}
 
 	[ProducesResponseType(typeof(IEnumerable<OrderUpdateOrderProductResponse>), StatusCodes.Status200OK)]

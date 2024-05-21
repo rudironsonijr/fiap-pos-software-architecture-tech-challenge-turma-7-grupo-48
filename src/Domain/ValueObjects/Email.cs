@@ -67,4 +67,15 @@ public struct Email
 			return false;
 		}
 	}
+
+	public override bool Equals(object? obj)
+	{
+		return obj is Email email &&
+			   Adress == email.Adress;
+	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(Adress);
+	}
 }
