@@ -108,6 +108,19 @@ public class Order : IAggregateRoot
 		return this;
 	}
 
+	public Order ChangeStatusToFinished()
+	{
+		ChangeOrderStatusInvalidException.ThrowIfOrderProductsIsEmpty(_orderProducts);
+		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+			Status,
+			OrderStatus.Creating,
+			OrderStatus.Finished
+		);
+
+		Status = OrderStatus.Received;
+		return this;
+	}
+
 	public Order ChangeStatusToCancelled()
 	{
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
