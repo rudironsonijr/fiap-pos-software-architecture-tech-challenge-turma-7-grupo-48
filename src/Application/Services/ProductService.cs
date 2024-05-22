@@ -1,6 +1,7 @@
 using Application.Dtos.ProductRequest;
 using Application.Dtos.ProductRequest.Extensions;
 using Application.Dtos.ProductResponse;
+using Application.Extensions.ProductAggregate;
 using Application.Services.Interfaces;
 using Core.Notifications;
 using Domain.Repositories;
@@ -18,8 +19,16 @@ public class ProductService : IProductService
 		_notificationContext = notificationContext;
 	}
 
+	public async Task<ProductGetResponse> GetAsync(int id, CancellationToken cancellationToken)
+	{
+		var product = await _productRepository.GetAsync(id, cancellationToken);
+
+		return 
+			product.ToProductGetResponse();
+	}
+
 	public async Task<ProductCreateResponse?> CreateAsync(ProductCreateRequest productCreateRequest,
-	CancellationToken cancellationToken)
+		CancellationToken cancellationToken)
 	{
 
 		_notificationContext

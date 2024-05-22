@@ -4,8 +4,9 @@ using Domain.ValueObjects;
 
 namespace Application.Services.Interfaces;
 
-public interface IProductService {
-
+public interface IProductService 
+{
+	Task<ProductGetResponse> GetAsync(int id, CancellationToken cancellationToken);
 	Task<ProductCreateResponse?> CreateAsync(ProductCreateRequest productCreateRequest,
 		CancellationToken cancellationToken);
 	Task UpdatePriceAsync(int id, ProductUpdatePriceRequest productUpdatePrice, CancellationToken cancellationToken);

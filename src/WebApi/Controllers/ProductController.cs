@@ -1,7 +1,9 @@
 using Application.Dtos.CustomerRequest;
 using Application.Dtos.CustomerResponse;
+using Application.Dtos.OrderResponse;
 using Application.Dtos.ProductRequest;
 using Application.Dtos.ProductResponse;
+using Application.Services;
 using Application.Services.Interfaces;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,24 @@ namespace WebApi.Controllers
 		public ProductController(IProductService productService)
 		{
 			_productService = productService;
+		}
+
+
+		[ProducesResponseType(typeof(IEnumerable<ProductGetResponse>), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[HttpGet]
+		[Route("{id}")]
+		public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
+		{
+			var response = await _productService.GetAsync(id, cancellationToken);
+
+			if (response == null)
+			{
+				return NotFound();
+			}
+
+			return Ok(response);
 		}
 
 		[ProducesResponseType(typeof(IEnumerable<ProductCreateResponse>), StatusCodes.Status200OK)]
@@ -35,9 +55,9 @@ namespace WebApi.Controllers
 		[Route("{id}/price")]
 		public async Task<IActionResult> UpdatePriceAsync(int id, ProductUpdatePriceRequest productCreateRequest, CancellationToken cancellationToken)
 		{
-			var response = await _productService.up(productCreateRequest, cancellationToken);
+			await _productService.UpdatePriceAsync(id, productCreateRequest, cancellationToken);
 
-			return Ok(response);
+			return NoContent();
 		}
 
 		[HttpPatch]
