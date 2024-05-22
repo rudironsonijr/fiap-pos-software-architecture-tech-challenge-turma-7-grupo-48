@@ -1,4 +1,4 @@
-﻿using Domain.Exceptions;
+using Domain.Exceptions;
 
 namespace Domain.ValueObjects.Exceptions;
 
@@ -6,10 +6,10 @@ public class InvalidCpfException(
 	string number
 ) : DomainException(
 	string.Format(
-		DefaultInvalidEmailMessageTemplate,
+		DefaultMessageTemplate,
 		number
 	)
 )
 {
-	private const string DefaultInvalidEmailMessageTemplate = "The CPF number {0} is invalid";
+	private const string DefaultMessageTemplate = "The CPF number {0} is invalid";
 }

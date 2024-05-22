@@ -2,12 +2,12 @@ using Domain.Entities.Base.Interfaces;
 using Domain.Entities.Enums;
 using Domain.Entities.OrderAggregate.Exceptions;
 using Domain.Entities.ProductAggregate;
+using Domain.ValueObjects;
 
 namespace Domain.Entities.OrderAggregate;
 
 public class Order : IAggregateRoot
 {
-	private readonly List<OrderProduct> _orderProducts = [];
 	public Order() { }
 
 	public Order(
@@ -22,9 +22,29 @@ public class Order : IAggregateRoot
 	}
 
 	public int Id { get; init; }
+
 	public int? CustomerId { get; init; }
+
 	public OrderStatus Status { get; private set; } = OrderStatus.Creating;
+
+	private readonly List<OrderProduct> _orderProducts = [];
 	public IReadOnlyCollection<OrderProduct> OrderProducts => _orderProducts.AsReadOnly();
+
+
+	private PaymentMethod? _paymentMethod;
+	public PaymentMethod? PaymentMethod
+	{
+		get => _paymentMethod;
+		set
+		{
+			if(Status != OrderStatus.Creating)
+			{
+				throw new SetPaymentMethodInvalidException();
+			}
+
+			_paymentMethod = value;
+		}
+	}
 
 	public decimal Price
 	{
@@ -52,7 +72,7 @@ public class Order : IAggregateRoot
 
 		OrderProduct orderProduct = new(product)
 		{
-			ProductPrice = product.Price, 
+			ProductPrice = product.Price,
 			Quantity = quantity
 		};
 
@@ -104,6 +124,42 @@ public class Order : IAggregateRoot
 		);
 
 		Status = OrderStatus.Received;
+		return this;
+	}
+
+	public Order ChangeStatusToPreparing()
+	{
+		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+			Status,
+			OrderStatus.Received,
+			OrderStatus.Preparing
+		);
+
+		Status = OrderStatus.Preparing;
+		return this;
+	}
+
+	public Order ChangeStatusToDone()
+	{
+		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+			Status,
+			OrderStatus.Preparing,
+			OrderStatus.Done
+		);
+
+		Status = OrderStatus.Done;
+		return this;
+	}
+
+	public Order ChangeStatusToFinished()
+	{
+		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
+			Status,
+			OrderStatus.Done,
+			OrderStatus.Finished
+		);
+
+		Status = OrderStatus.Finished;
 		return this;
 	}
 

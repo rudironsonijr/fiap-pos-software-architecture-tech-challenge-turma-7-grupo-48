@@ -8,7 +8,7 @@ public class ProductRepositoryAdapter : IProductRepository
 {
 	public IUnitOfWork UnitOfWork => throw new NotImplementedException();
 
-	public Task<Product> CreateAsync(Product product, CancellationToken cancellationToken)
+	public Task<int> CreateAsync(Product product, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}

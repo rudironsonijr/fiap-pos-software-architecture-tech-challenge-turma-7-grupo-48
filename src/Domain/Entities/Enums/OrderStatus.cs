@@ -8,7 +8,7 @@ public enum OrderStatus
 	Creating = 1,
 	Received = 3,
 	Preparing = 4,
-	[Description("Order Soon")] OrderSoon = 5,
+	Done = 5,
 	Finished = 6,
 	Cancelled = 7
 }
