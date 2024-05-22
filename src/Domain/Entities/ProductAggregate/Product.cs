@@ -64,24 +64,7 @@ public class Product : IAggregateRoot
 		}
 	}
 
-	private readonly List<ProductPhoto> _photos = [];
-	public IReadOnlyCollection<ProductPhoto> Photos => _photos.AsReadOnly();
 
-	public Product AddPhoto(Photo photo)
-	{
-		ProductPhoto productPhoto = new() { Photo = photo };
-		_photos.Add(productPhoto);
+	public Photo Photo { get; set; }
 
-		return this;
-	}
-
-	public Product RemovePhoto(int imageId)
-	{
-		var itemToRemove = _photos.SingleOrDefault(x => x.Id == imageId);
-
-		if (itemToRemove != null)
-			_photos.Remove(itemToRemove);
-
-		return this;
-	}
 }

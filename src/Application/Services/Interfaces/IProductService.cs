@@ -8,6 +8,6 @@ public interface IProductService {
 
 	Task<ProductCreateResponse?> CreateAsync(ProductCreateRequest productCreateRequest,
 		CancellationToken cancellationToken);
-
+	Task UpdatePriceAsync(int id, ProductUpdatePriceRequest productUpdatePrice, CancellationToken cancellationToken);
 	Task AddPhoto(int id, Photo photo, CancellationToken cancellationToken);
 }

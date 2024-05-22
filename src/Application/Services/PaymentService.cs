@@ -66,11 +66,13 @@ public class PaymentService : IPaymentService
 		Order orderResponse = await _orderRepository.GetAsync(orderId, cancellationToken);
 
 		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{orderId} not found");
+		_notificationContext.AssertArgumentNotNull(orderResponse.PaymentMethod, $"Order with id:{orderId} has no defined Payment Method");
 
 		if (_notificationContext.HasErrors)
 		{
 			return;
 		}
+
 
 		orderResponse.ChangeStatusToReceived();
 

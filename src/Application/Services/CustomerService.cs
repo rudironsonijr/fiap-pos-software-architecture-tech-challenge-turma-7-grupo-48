@@ -37,11 +37,13 @@ public class CustomerService : ICustomerService
 
 	public async Task<CreateCustomerResponse?> CreateAsync(CreateCustomerRequest createCustomerRequest, CancellationToken cancellationToken)
 	{
-		_notificationContext.AssertArgumentNotNullOrWhiteSpace(createCustomerRequest.Name, $"The field name is required");
-		_notificationContext.AssertArgumentInvalidCpf(createCustomerRequest.Cpf);
-		_notificationContext.AssertArgumentInvalidEmail(createCustomerRequest.Email);
+		_notificationContext
+			.AssertArgumentNotNullOrWhiteSpace(createCustomerRequest.Name, $"The field name is required")
+			.AssertArgumentInvalidCpf(createCustomerRequest.Cpf)
+			.AssertArgumentInvalidEmail(createCustomerRequest.Email);
 
 		var cpfAlreadyExist = await _customerRepository.ExistsByCpf(createCustomerRequest.Cpf, cancellationToken);
+
 		if (cpfAlreadyExist)
 		{
 			_notificationContext.AddNotification($"CPF {createCustomerRequest.Cpf} already exists!");

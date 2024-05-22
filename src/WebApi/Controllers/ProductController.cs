@@ -22,16 +22,27 @@ namespace WebApi.Controllers
 		[ProducesResponseType(typeof(IEnumerable<ProductCreateResponse>), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[HttpPost]
-		public async Task<IActionResult> Create(ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
+		public async Task<IActionResult> CreateAsync(ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
 		{
 			var response = await _productService.CreateAsync(productCreateRequest, cancellationToken);
 
 			return Ok(response);
 		}
 
+		[ProducesResponseType(typeof(IEnumerable<ProductCreateResponse>), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[HttpPatch]
+		[Route("{id}/price")]
+		public async Task<IActionResult> UpdatePriceAsync(int id, ProductUpdatePriceRequest productCreateRequest, CancellationToken cancellationToken)
+		{
+			var response = await _productService.up(productCreateRequest, cancellationToken);
+
+			return Ok(response);
+		}
+
 		[HttpPatch]
 		[Route("{id}/image")]
-		public async Task<IActionResult> AddImage(int id, IFormFile file)
+		public async Task<IActionResult> AddImageAsync(int id, IFormFile file)
 		{
 			byte[] fileBytes;
 			using (var memoryStream = new MemoryStream())

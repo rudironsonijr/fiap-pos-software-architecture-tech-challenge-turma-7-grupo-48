@@ -120,8 +120,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Creating,
-			OrderStatus.Received
-		);
+			OrderStatus.Received);
 
 		Status = OrderStatus.Received;
 		return this;
@@ -132,8 +131,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Received,
-			OrderStatus.Preparing
-		);
+			OrderStatus.Preparing);
 
 		Status = OrderStatus.Preparing;
 		return this;
@@ -144,8 +142,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Preparing,
-			OrderStatus.Done
-		);
+			OrderStatus.Done);
 
 		Status = OrderStatus.Done;
 		return this;
@@ -156,8 +153,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Done,
-			OrderStatus.Finished
-		);
+			OrderStatus.Finished);
 
 		Status = OrderStatus.Finished;
 		return this;
@@ -168,8 +164,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Creating,
-			OrderStatus.Cancelled
-		);
+			OrderStatus.Cancelled);
 
 		Status = OrderStatus.Cancelled;
 		return this;
