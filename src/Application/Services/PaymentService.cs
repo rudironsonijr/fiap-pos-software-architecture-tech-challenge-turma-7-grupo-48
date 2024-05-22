@@ -1,8 +1,12 @@
 using Application.Dtos.PaymentRequest;
+using Application.Dtos.PaymentResponse;
 using Application.Services.Interfaces;
 using Core.Notifications;
+using Domain.Entities.Enums;
 using Domain.Entities.OrderAggregate;
 using Domain.Repositories;
+using Domain.ValueObjects;
+using Helpers;
 
 namespace Application.Services;
 
@@ -26,22 +30,52 @@ public class PaymentService : IPaymentService
 		_notificationContext = notificationContext;
 	}
 
-	public async Task<bool> CreatePaymentAsync(CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
+	public async Task<CreatePaymentResponse?> CreateAsync(CreatePaymentRequest createPayment, CancellationToken cancellationToken)
 	{
-		Order orderResponse = await _orderRepository.GetAsync(createPaymentRequest.OrderId, cancellationToken);
+		Order orderResponse = await _orderRepository.GetAsync(createPayment.OrderId, cancellationToken);
 
+		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{createPayment.OrderId} not found");
 
-		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{createPaymentRequest.OrderId} not found");
+		_notificationContext.AssertArgumentEnumInvalidValue(createPayment.Provider, PaymentProvider.None, 
+			$"Payment Method Can't be {PaymentProvider.None.GetEnumDescription()}");
+
+		_notificationContext.AssertArgumentEnumInvalidValue(createPayment.Kind, PaymentMethodKind.None,
+			$"Payment Kind Can't be {PaymentMethodKind.None.GetEnumDescription()}");
 
 		if (_notificationContext.HasErrors)
 		{
-			return false;
+			return null;
 		}
 
-		orderResponse.ChangeStatusToFinished();
+		PaymentMethod paymentMethod = new(createPayment.Provider, createPayment.Kind);
+
+		orderResponse.PaymentMethod = paymentMethod;
 
 		await _orderRepository.UpdateAsync(orderResponse, cancellationToken);
 
-		return true;
+		CreatePaymentResponse response = new()
+		{
+			PaymentId = Guid.NewGuid().ToString(),
+		};
+		
+		return response;
+	}
+
+	public async Task ConfirmPaymentAsync(int orderId, CancellationToken cancellationToken)
+	{
+		Order orderResponse = await _orderRepository.GetAsync(orderId, cancellationToken);
+
+		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{orderId} not found");
+
+		if (_notificationContext.HasErrors)
+		{
+			return;
+		}
+
+		orderResponse.ChangeStatusToReceived();
+
+		await _orderRepository.UpdateAsync(orderResponse, cancellationToken);
+
+		return;
 	}
 }

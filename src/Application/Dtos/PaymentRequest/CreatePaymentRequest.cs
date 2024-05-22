@@ -1,9 +1,10 @@
-using Application.Dtos.OrderResponse;
+using Domain.Entities.Enums;
 
-namespace Application.Dtos.PaymentRequest
+namespace Application.Dtos.PaymentRequest;
+
+public record CreatePaymentRequest
 {
-    public class CreatePaymentRequest
-    {
-		public int OrderId { get; set; }
-	}
+	public int OrderId { get; init; }
+	public PaymentMethodKind Kind { get; init; }
+	public PaymentProvider Provider { get; init; }
 }

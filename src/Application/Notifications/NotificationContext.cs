@@ -57,4 +57,12 @@ public class NotificationContext
 			AddNotification(message);
 		}
 	}
+
+	public void AssertArgumentEnumInvalidValue(Enum value, Enum invalidValue, string message)
+	{
+		if (value == invalidValue)
+		{
+			AddNotification(message);
+		}
+	}
 }
