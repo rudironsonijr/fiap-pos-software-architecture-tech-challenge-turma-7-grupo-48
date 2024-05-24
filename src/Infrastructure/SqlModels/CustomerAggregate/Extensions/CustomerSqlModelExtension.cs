@@ -1,6 +1,7 @@
 ﻿using Domain.Entities.CustomerAggregate;
+using Infrastructure.SqlModels.CustomerAggregate;
 
-namespace Infrastructure.SqlModels.Extensions;
+namespace Infrastructure.SqlModels.CustomerAggregate.Extensions;
 
 internal static class CustomerSqlModelExtension
 {
@@ -8,7 +9,10 @@ internal static class CustomerSqlModelExtension
 	{
 		Customer response = new()
 		{
-			Id = model.Id, Name = model.Name, Cpf = model.Cpf, Email = model.Email
+			Id = model.Id,
+			Name = model.Name,
+			Cpf = model.Cpf,
+			Email = model.Email
 		};
 
 		return response;

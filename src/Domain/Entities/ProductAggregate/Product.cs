@@ -65,6 +65,6 @@ public class Product : IAggregateRoot
 	}
 
 
-	public Photo Photo { get; set; }
+	public Photo? Photo { get; set; }
 
 }

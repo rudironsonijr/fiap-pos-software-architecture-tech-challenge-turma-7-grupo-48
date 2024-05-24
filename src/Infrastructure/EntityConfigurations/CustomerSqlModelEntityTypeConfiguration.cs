@@ -1,4 +1,4 @@
-using Infrastructure.SqlModels;
+using Infrastructure.SqlModels.CustomerAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

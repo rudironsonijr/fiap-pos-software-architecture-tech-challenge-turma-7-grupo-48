@@ -5,8 +5,12 @@ using Application.Dtos.ProductRequest;
 using Application.Dtos.ProductResponse;
 using Application.Services;
 using Application.Services.Interfaces;
+using Domain.Entities.Enums;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.DTOs;
+using WebApi.DTOs.Extensions;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers
 {
@@ -39,12 +43,25 @@ namespace WebApi.Controllers
 			return Ok(response);
 		}
 
+		[ProducesResponseType(typeof(IEnumerable<GetOrListOrderResponse>), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[HttpGet]
+		[Route("type/{orderStatus}")]
+		public async Task<IActionResult> ListAsync(ProductType productType, int? page, int? limit, CancellationToken cancellationToken)
+		{
+			var response = await _productService.ListAsync(productType, page, limit, cancellationToken);
+
+			return Ok(response);
+		}
+
 		[ProducesResponseType(typeof(IEnumerable<ProductCreateResponse>), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[HttpPost]
-		public async Task<IActionResult> CreateAsync(ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
+		public async Task<IActionResult> CreateAsync(ProductCreateWithFormFileRequest productCreateRequest, CancellationToken cancellationToken)
 		{
-			var response = await _productService.CreateAsync(productCreateRequest, cancellationToken);
+			var request = await productCreateRequest.ToProductCreateRequestAsync(cancellationToken);
+			var response = await _productService.CreateAsync(request, cancellationToken);
 
 			return Ok(response);
 		}
@@ -62,17 +79,12 @@ namespace WebApi.Controllers
 
 		[HttpPatch]
 		[Route("{id}/image")]
-		public async Task<IActionResult> AddImageAsync(int id, IFormFile file)
+		public async Task<IActionResult> UpdateImageAsync(int id, IFormFile file, CancellationToken cancellationToken)
 		{
-			byte[] fileBytes;
-			using (var memoryStream = new MemoryStream())
-			{
-				await file.CopyToAsync(memoryStream);
-				fileBytes = memoryStream.ToArray();
-			}
 
-			Photo photo = new Photo(file.FileName, file.ContentType, fileBytes);
-			throw new NotImplementedException();
+			var photo = await file.ToPhotoAsync(cancellationToken);
+			await _productService.UpdatePhoto(id, photo, cancellationToken);
+			return NoContent();
 		}
 	}
 }

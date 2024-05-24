@@ -4,6 +4,7 @@ using Application.Extensions.OrderAggregate;
 using Application.Services.Interfaces;
 using Core.Notifications;
 using Domain.Entities.CustomerAggregate;
+using Domain.Entities.Enums;
 using Domain.Entities.OrderAggregate;
 using Domain.Repositories;
 
@@ -28,12 +29,20 @@ public class OrderService : IOrderService
 		_productRepository = productRepository;
 		_notificationContext = notificationContext;
 	}
-	public async Task<GetOrderResponse?> GetAsync(int id, CancellationToken cancellationToken)
+	public async Task<GetOrListOrderResponse?> GetAsync(int id, CancellationToken cancellationToken)
 	{
 		var order = await _orderRepository.GetAsync(id, cancellationToken);
 
 		return
 			order?.ToGetOrderResponse();
+	}
+
+	public async Task<IEnumerable<GetOrListOrderResponse>> ListAsync(OrderStatus orderStatus, int? page, int? limit, CancellationToken cancellationToken)
+	{
+		var order = await _orderRepository.ListAsync(orderStatus, page, limit, cancellationToken);
+
+		return
+			order.Select(x => x.ToGetOrderResponse());
 	}
 
 	public async Task<CreateOrderResponse?> CreateAsync(CreateOrderRequest orderCreateRequest,
@@ -63,13 +72,13 @@ public class OrderService : IOrderService
 			CustomerId = customer?.Id,
 		};
 
-		order.AddProduct(product, orderCreateRequest.Product.Quantity);
+		order.AddProduct(product!, orderCreateRequest.Product.Quantity);
 
-		order = await _orderRepository.CreateAsync(order, cancellationToken);
+		var orderId = await _orderRepository.CreateAsync(order, cancellationToken);
 
 		CreateOrderResponse response = new()
 		{
-			OrderId = order.Id
+			OrderId = orderId
 		};
 		return response;
 	}
@@ -95,7 +104,7 @@ public class OrderService : IOrderService
 			return null;
 		}
 
-		order.AddProduct(product, orderAddProductRequest.Quantity);
+		order!.AddProduct(product!, orderAddProductRequest.Quantity);
 
 		order = await _orderRepository.UpdateAsync(order, cancellationToken);
 
@@ -202,7 +211,7 @@ public class OrderService : IOrderService
 			return;
 		}
 
-		order.ChangeStatusToCancelled();
+		order!.ChangeStatusToCancelled();
 
 		await _orderRepository.UpdateAsync(order, cancellationToken);
 	}

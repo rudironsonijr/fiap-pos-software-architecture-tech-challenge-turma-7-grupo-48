@@ -37,7 +37,7 @@ public class Order : IAggregateRoot
 		get => _paymentMethod;
 		set
 		{
-			if(Status != OrderStatus.Creating)
+			if (Status != OrderStatus.Creating)
 			{
 				throw new SetPaymentMethodInvalidException();
 			}
@@ -55,10 +55,7 @@ public class Order : IAggregateRoot
 		}
 	}
 
-	public Order AddProduct(
-		Product product,
-		int quantity
-	)
+	public Order AddProduct(Product product, int quantity)
 	{
 		ValidateStatusToUpdateOrderProduct();
 
@@ -92,10 +89,7 @@ public class Order : IAggregateRoot
 		return this;
 	}
 
-	public Order UpdateProductQuantity(
-		int orderProductId,
-		int quantity
-	)
+	public Order UpdateProductQuantity(int orderProductId, int quantity)
 	{
 		ValidateStatusToUpdateOrderProduct();
 

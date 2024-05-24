@@ -1,21 +1,46 @@
+using Domain.Entities.Enums;
 using Domain.Entities.ProductAggregate;
 using Domain.Repositories;
-using Domain.Repositories.Base;
+using Infrastructure.Extensions.ProductAggregate;
+using Infrastructure.Repositories.Interfaces;
+using Infrastructure.SqlModels.ProductAggregate.Extensions;
 
 namespace Infrastructure.Adapters;
 
 public class ProductRepositoryAdapter : IProductRepository
 {
-	public IUnitOfWork UnitOfWork => throw new NotImplementedException();
+	private readonly IProductSqlRepository _repository;
 
-	public Task<int> CreateAsync(Product product, CancellationToken cancellationToken)
+	public ProductRepositoryAdapter(IProductSqlRepository productSqlRepository)
 	{
-		throw new NotImplementedException();
+		_repository = productSqlRepository;
 	}
 
-	public Task<Product> GetAsync(int Id, CancellationToken cancellationToken)
+	public async Task<Product?> GetAsync(int id, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var productSql = await _repository.GetAsync(x => x.Id == id, true, cancellationToken);
+		return
+			productSql?.ToProduct();
+	}
+
+	public async Task<IEnumerable<Product>> ListAsync(ProductType productType, int? page,
+		int? limit, CancellationToken cancellationToken)
+	{
+		var productSql = await _repository.ListAsync(x => x.ProductType == productType,
+			page, limit, cancellationToken);
+
+		var response = productSql.Select(x => x.ToProduct());
+		return response;
+
+	}
+
+	public async Task<int> CreateAsync(Product product, CancellationToken cancellationToken)
+	{
+		var productSqlModel = product.ToProductSqlModel();
+		_repository.Add(productSqlModel);
+		await _repository.UnitOfWork.CommitAsync(cancellationToken);
+
+		return productSqlModel.Id;
 	}
 
 	public Task<Product> UpdateAsync(Product Product, CancellationToken cancellationToken)

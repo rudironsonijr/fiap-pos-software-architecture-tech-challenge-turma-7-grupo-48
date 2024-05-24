@@ -4,6 +4,7 @@ using Application.Dtos.ProductResponse;
 using Application.Extensions.ProductAggregate;
 using Application.Services.Interfaces;
 using Core.Notifications;
+using Domain.Entities.Enums;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
@@ -19,12 +20,20 @@ public class ProductService : IProductService
 		_notificationContext = notificationContext;
 	}
 
-	public async Task<ProductGetResponse> GetAsync(int id, CancellationToken cancellationToken)
+	public async Task<ProductGetResponse?> GetAsync(int id, CancellationToken cancellationToken)
 	{
 		var product = await _productRepository.GetAsync(id, cancellationToken);
 
-		return 
-			product.ToProductGetResponse();
+		return
+			product?.ToProductGetResponse();
+	}
+
+	public async Task<IEnumerable<ProductGetResponse>> ListAsync(ProductType type, int? page, int? skip, CancellationToken cancellationToken)
+	{
+		var products = await _productRepository.ListAsync(type, page, skip, cancellationToken);
+
+		return
+			products.Select(x => x.ToProductGetResponse());
 	}
 
 	public async Task<ProductCreateResponse?> CreateAsync(ProductCreateRequest productCreateRequest,
@@ -65,12 +74,12 @@ public class ProductService : IProductService
 			return;
 		}
 
-		product.Price = productUpdatePrice.Price;
+		product!.Price = productUpdatePrice.Price;
 
 		await _productRepository.UpdateAsync(product, cancellationToken);
 	}
 
-	public async Task AddPhoto(int id, Photo photo, CancellationToken cancellationToken)
+	public async Task UpdatePhoto(int id, Photo photo, CancellationToken cancellationToken)
 	{
 		var product = await _productRepository.GetAsync(id, cancellationToken);
 
@@ -81,7 +90,7 @@ public class ProductService : IProductService
 			return;
 		}
 
-		product.Photo = photo;
+		product!.Photo = photo;
 
 		await _productRepository.UpdateAsync(product, cancellationToken);
 	}
