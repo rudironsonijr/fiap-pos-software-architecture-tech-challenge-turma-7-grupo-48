@@ -1,0 +1,11 @@
+include:
+  - compose/docker-compose.database.yaml
+services:
+  app-snacks:
+    build: .
+    environment:
+      SqlConnection: "Server=localhost,1433;Database=diners;Trusted_Connection=True;MultipleActiveResultSets=true"
+    depends_on:
+      - mssql-server
+    ports:
+      - "8081:8081"
