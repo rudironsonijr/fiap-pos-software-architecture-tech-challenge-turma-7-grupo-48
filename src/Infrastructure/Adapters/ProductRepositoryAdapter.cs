@@ -1,6 +1,8 @@
 using Domain.Entities.Enums;
+using Domain.Entities.OrderAggregate;
 using Domain.Entities.ProductAggregate;
 using Domain.Repositories;
+using Infrastructure.Exceptions;
 using Infrastructure.Extensions.ProductAggregate;
 using Infrastructure.Repositories.Interfaces;
 using Infrastructure.SqlModels.ProductAggregate.Extensions;
@@ -43,8 +45,20 @@ public class ProductRepositoryAdapter : IProductRepository
 		return productSqlModel.Id;
 	}
 
-	public Task<Product> UpdateAsync(Product Product, CancellationToken cancellationToken)
+	public async Task UpdateAsync(Product product, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var productSql = await _repository.GetAsync(x => x.Id == product.Id, false, cancellationToken);
+
+		EntityNotFoundException.ThrowIfPropertyNull(productSql, typeof(Product), "Id", product.Id); ;
+
+		productSql!.Price = product.Price;
+		productSql!.Description = product.Description;
+		productSql.PhotoContentType = product.Photo?.ContentType;
+		productSql.PhotoData = product.Photo?.Data;
+		productSql.PhotoFilename = product.Photo?.FileName;
+
+		_repository.Update(productSql);
+		await _repository.UnitOfWork.CommitAsync(cancellationToken);
+
 	}
 }

@@ -6,7 +6,7 @@ using Domain.ValueObjects;
 
 namespace Domain.Entities.ProductAggregate;
 
-//ToDO: implementar Photo
+
 public class Product : IAggregateRoot
 {
 	public int Id { get; init; }

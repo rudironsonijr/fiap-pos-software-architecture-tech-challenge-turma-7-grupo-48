@@ -49,7 +49,7 @@ public class OrderRepositoryAdpater : IOrderRepository
 	{
 		var orderSql = await _orderSqlRepository.GetAsync(x => x.Id == order.Id, true, cancellationToken);
 
-		NotFoundException.ThrowIfPropertyNull(orderSql, typeof(Order), "Id", order.Id); ;
+		EntityNotFoundException.ThrowIfPropertyNull(orderSql, typeof(Order), "Id", order.Id); ;
 		
 		throw new NotImplementedException();
 	}
