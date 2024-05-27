@@ -11,9 +11,11 @@ namespace Infrastructure.Adapters;
 public class OrderRepositoryAdpater : IOrderRepository
 {
 	private readonly IOrderSqlRepository _orderSqlRepository;
-	public OrderRepositoryAdpater(IOrderSqlRepository orderSqlRepository)
+	private readonly IOrderProductRepository _orderProductRepository;
+	public OrderRepositoryAdpater(IOrderSqlRepository orderSqlRepository, IOrderProductRepository orderProductRepository)
 	{
 		_orderSqlRepository = orderSqlRepository;
+		_orderProductRepository = orderProductRepository;
 	}
 
 	public async Task<int> CreateAsync(Order order, CancellationToken cancellationToken)
@@ -34,10 +36,10 @@ public class OrderRepositoryAdpater : IOrderRepository
 			orderSql?.ToOrder();
 	}
 
-	public async Task<IEnumerable<Order>> ListAsync(OrderStatus orderStatus, int? page, 
+	public async Task<IEnumerable<Order>> ListAsync(OrderStatus orderStatus, int? page,
 		int? limit, CancellationToken cancellationToken)
 	{
-		var orderSql = await _orderSqlRepository.ListAsync(x => x.Status == orderStatus, 
+		var orderSql = await _orderSqlRepository.ListAsync(x => x.Status == orderStatus,
 			page, limit, cancellationToken);
 
 		var response = orderSql.Select(x => x.ToOrder());
@@ -45,12 +47,49 @@ public class OrderRepositoryAdpater : IOrderRepository
 
 	}
 
-	public async Task<Order> UpdateAsync(Order order, CancellationToken cancellationToken)
+	public async Task UpdateAsync(Order order, CancellationToken cancellationToken)
 	{
-		var orderSql = await _orderSqlRepository.GetAsync(x => x.Id == order.Id, true, cancellationToken);
+		var orderSql = await _orderSqlRepository.GetAsync(x => x.Id == order.Id, false, cancellationToken);
 
-		EntityNotFoundException.ThrowIfPropertyNull(orderSql, typeof(Order), "Id", order.Id); ;
-		
-		throw new NotImplementedException();
+		EntityNotFoundException.ThrowIfPropertyNull(orderSql, typeof(Order), "Id", order.Id);
+
+		orderSql!.Status = order.Status;
+		orderSql.PaymentKind = order.PaymentMethod?.Kind;
+		orderSql.PaymentProvider = order.PaymentMethod?.Provider;
+		orderSql.Price = order.Price;
+
+		var orderProductsId = order.OrderProducts.Select(x => x.Id);
+		var toRemove = orderSql.OrderProducts.Where(x => !orderProductsId.Contains(x.Id)).ToList();
+		if (toRemove.Count > 0)
+		{
+			_orderProductRepository.Remove(toRemove);
+		}
+
+		var orderProductUpdate = order.OrderProducts
+			.Where(x => x.Id != 0)
+			.Select(x => x.ToOrderProductSqlModel());
+
+		foreach (var updateOrderProduct in orderProductUpdate)
+		{
+			var item = orderSql.OrderProducts.Where(x => x.Id == updateOrderProduct.Id).First();
+			item.Quantity = updateOrderProduct.Quantity;
+			item.ProductPrice = updateOrderProduct.ProductPrice;
+			_orderProductRepository.Update(item);
+
+		}
+
+		var orderProductAdd = order.OrderProducts
+			.Where(x => x.Id == 0)
+			.Select(x => x.ToOrderProductSqlModel())
+			.ToList();
+
+		foreach(var add in orderProductAdd)
+		{
+			_orderProductRepository.Add(add);
+		}
+
+		_orderSqlRepository.Update(orderSql);
+		await _orderSqlRepository.UnitOfWork.CommitAsync(cancellationToken);
+
 	}
 }

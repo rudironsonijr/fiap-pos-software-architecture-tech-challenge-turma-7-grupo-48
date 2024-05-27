@@ -32,7 +32,7 @@ public class PaymentService : IPaymentService
 
 	public async Task<CreatePaymentResponse?> CreateAsync(CreatePaymentRequest createPayment, CancellationToken cancellationToken)
 	{
-		Order orderResponse = await _orderRepository.GetAsync(createPayment.OrderId, cancellationToken);
+		Order? orderResponse = await _orderRepository.GetAsync(createPayment.OrderId, cancellationToken);
 
 		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{createPayment.OrderId} not found");
 
@@ -49,7 +49,7 @@ public class PaymentService : IPaymentService
 
 		PaymentMethod paymentMethod = new(createPayment.Provider, createPayment.Kind);
 
-		orderResponse.PaymentMethod = paymentMethod;
+		orderResponse!.PaymentMethod = paymentMethod;
 
 		await _orderRepository.UpdateAsync(orderResponse, cancellationToken);
 
@@ -63,10 +63,10 @@ public class PaymentService : IPaymentService
 
 	public async Task ConfirmPaymentAsync(int orderId, CancellationToken cancellationToken)
 	{
-		Order orderResponse = await _orderRepository.GetAsync(orderId, cancellationToken);
+		Order? orderResponse = await _orderRepository.GetAsync(orderId, cancellationToken);
 
 		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{orderId} not found");
-		_notificationContext.AssertArgumentNotNull(orderResponse.PaymentMethod, $"Order with id:{orderId} has no defined Payment Method");
+		_notificationContext.AssertArgumentNotNull(orderResponse?.PaymentMethod, $"Order with id:{orderId} has no defined Payment Method");
 
 		if (_notificationContext.HasErrors)
 		{
@@ -74,7 +74,7 @@ public class PaymentService : IPaymentService
 		}
 
 
-		orderResponse.ChangeStatusToReceived();
+		orderResponse!.ChangeStatusToReceived();
 
 		await _orderRepository.UpdateAsync(orderResponse, cancellationToken);
 

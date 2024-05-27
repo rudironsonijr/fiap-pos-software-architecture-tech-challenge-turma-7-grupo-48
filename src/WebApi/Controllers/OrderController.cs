@@ -70,25 +70,16 @@ public class OrderController : ControllerBase
 		return Ok(response);
 	}
 
-	[ProducesResponseType(typeof(IEnumerable<OrderUpdateOrderProductResponse>), StatusCodes.Status200OK)]
+
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPatch]
-	[Route("{id}/order-product/{orderProductId}")]
-	public async Task<IActionResult> UpdateProductQuantityAsync(
-		int id,
-		int orderProductId,
-		OrderUpdateProductQuantityRequest orderAddProductRequest,
-		CancellationToken cancellationToken
-	)
+	[Route("{id}/status/Preparing")]
+	public async Task<IActionResult> UpdateStatusToPreparing(int id, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.UpdateProductQuantity(
-			id,
-			orderProductId,
-			orderAddProductRequest,
-			cancellationToken
-		);
+		await _orderService.UpdateStatusToPreparing(id, cancellationToken);
 
-		return Ok(response);
+		return NoContent();
 	}
 
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -117,10 +108,10 @@ public class OrderController : ControllerBase
 	[ProducesResponseType(typeof(IEnumerable<OrderUpdateOrderProductResponse>), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpDelete]
-	[Route("{orderId}/order-product/{orderProductId}")]
-	public async Task<IActionResult> RemoveProductAsync(int id, int orderProductId, CancellationToken cancellationToken)
+	[Route("{orderId}/product/{productId}")]
+	public async Task<IActionResult> RemoveProductAsync(int orderId, int productId, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.RemoveProduct(id, orderProductId, cancellationToken);
+		var response = await _orderService.RemoveProduct(orderId, productId, cancellationToken);
 		return Ok(response);
 	}
 
@@ -128,9 +119,9 @@ public class OrderController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpDelete]
 	[Route("{orderId}")]
-	public async Task<IActionResult> CancelOrderAsync(int id, CancellationToken cancellationToken)
+	public async Task<IActionResult> CancelOrderAsync(int orderId, CancellationToken cancellationToken)
 	{
-		await _orderService.CancelOrder(id, cancellationToken);
+		await _orderService.CancelOrder(orderId, cancellationToken);
 
 		return NoContent();
 	}

@@ -21,10 +21,10 @@ internal static class OrderProductExtension
 	{
 		GetOrderProductReponse getOrderProductReponse = new()
 		{
-			Id = product.Id,
 			ProductId = product.ProductId,
 			ProductPrice = product.ProductPrice,
-			ProductName = product.Product.Name
+			ProductName = product.Product.Name,
+			Quantity = product.Quantity,
 		};
 
 		return getOrderProductReponse;

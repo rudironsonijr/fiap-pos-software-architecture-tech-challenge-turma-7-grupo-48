@@ -6,8 +6,8 @@ namespace WebApi.DTOs.Extensions;
 
 internal static class ProductCreateWithImageRequestExtension
 {
-	public static async Task<ProductCreateRequest> ToProductCreateRequestAsync
-		(this ProductCreateWithFormFileRequest productCreateRequestWithImage, CancellationToken cancellationToken)
+	public static async Task<ProductCreateRequest> ToProductCreateRequestAsync(
+		this ProductCreateWithFormFileRequest productCreateRequestWithImage, CancellationToken cancellationToken)
 	{
 		Photo? photo = null;
 		if(productCreateRequestWithImage.Photo != null)

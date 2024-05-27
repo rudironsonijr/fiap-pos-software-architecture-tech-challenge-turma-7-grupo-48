@@ -7,6 +7,14 @@ internal static class OrderProductExtension
 {
 	public static OrderProductSqlModel ToOrderProductSqlModel(this OrderProduct orderProduct)
 	{
-		throw new NotImplementedException();
+		OrderProductSqlModel response = new()
+		{
+			Id = orderProduct.Id,
+			ProductId = orderProduct.ProductId,
+			OrderId = orderProduct.OrderId,
+			ProductPrice = orderProduct.ProductPrice,
+			Quantity = orderProduct.Quantity,
+		};
+		return response;
 	}
 }

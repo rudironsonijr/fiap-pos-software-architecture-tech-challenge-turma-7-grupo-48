@@ -8,6 +8,10 @@ using Application.Services.Interfaces;
 using Domain.Entities.Enums;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using System.Net;
+using System.Net.Http.Headers;
+using WebApi.Controllers.Exceptions;
 using WebApi.DTOs;
 using WebApi.DTOs.Extensions;
 using WebApi.Extensions;
@@ -43,11 +47,28 @@ namespace WebApi.Controllers
 			return Ok(response);
 		}
 
+		[ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[HttpGet]
+		[Route("{id}/Photo")]
+		public async Task<FileResult> DwonloadPhotoAsync(int id, CancellationToken cancellationToken)
+		{
+			var photo = await _productService.GetPhotoAsync(id, cancellationToken);
+
+			if(photo == null)
+			{
+				throw new ControllerNotFoundException($"Photo for product Id: {id} not found");
+			}
+
+			return File(photo?.Data!, photo?.ContentType!);
+		}
+
 		[ProducesResponseType(typeof(IEnumerable<GetOrListOrderResponse>), StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[HttpGet]
-		[Route("type/{orderStatus}")]
+		[Route("type/{productType}")]
 		public async Task<IActionResult> ListAsync(ProductType productType, int? page, int? limit, CancellationToken cancellationToken)
 		{
 			var response = await _productService.ListAsync(productType, page, limit, cancellationToken);
@@ -66,7 +87,7 @@ namespace WebApi.Controllers
 			return Ok(response);
 		}
 
-		[ProducesResponseType(typeof(IEnumerable<ProductCreateResponse>), StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[HttpPatch]
 		[Route("{id}/price")]
@@ -77,6 +98,8 @@ namespace WebApi.Controllers
 			return NoContent();
 		}
 
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[HttpPatch]
 		[Route("{id}/image")]
 		public async Task<IActionResult> UpdateImageAsync(int id, IFormFile file, CancellationToken cancellationToken)

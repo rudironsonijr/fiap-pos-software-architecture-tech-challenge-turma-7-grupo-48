@@ -13,6 +13,6 @@ public class ProductSqlModel : BaseSqlModel
 	public string? PhotoContentType { get; set; }
 	public byte[]? PhotoData { get; set; }
 
-	public IEnumerable<OrderProductSqlModel> OrderProducts { get; set; } = [];
+	public virtual List<OrderProductSqlModel> OrderProducts { get; set; } = new();
 
 }

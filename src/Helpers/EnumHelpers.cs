@@ -11,11 +11,12 @@ public static class EnumHelpers
 
 		var attributes = fi?.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
 
-		if (attributes != null &&
-		    attributes.Any())
+		if (attributes != null && attributes.Any())
+		{
 			return attributes.First()
 				.Description;
-
+		}
+			
 		return value.ToString();
 	}
 }

@@ -23,10 +23,11 @@ public class OrderSqlRepository : IOrderSqlRepository
 		var take = limit ?? int.MaxValue;
 
 		var skip = MathHelper.CalculatePaginateSkip(page, take);
-		
+
 		var orders = await _context.Order
 			.AsNoTracking()
 			.Include(x => x.OrderProducts)
+			.ThenInclude(x => x.Product)
 			.Where(expression)
 			.Skip(skip)
 			.Take(take)
@@ -43,11 +44,14 @@ public class OrderSqlRepository : IOrderSqlRepository
 		{
 			return await _context.Order
 				.Include(x => x.OrderProducts)
+				.ThenInclude(x => x.Product)
 				.AsNoTracking()
 				.FirstOrDefaultAsync(expression, cancellationToken);
 		}
 
 		return await _context.Order
+			.Include(x => x.OrderProducts)
+			.ThenInclude(x => x.Product)
 			.FirstOrDefaultAsync(expression, cancellationToken);
 	}
 

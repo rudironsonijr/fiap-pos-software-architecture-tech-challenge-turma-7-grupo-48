@@ -24,7 +24,7 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 		return customerSql?.ToCustomer();
 	}
 
-	public async Task<Customer?> GetAsync(string id, CancellationToken cancellationToken)
+	public async Task<Customer?> GetAsync(int id, CancellationToken cancellationToken)
 	{
 		var customerSql = await _customerSqlRepository.GetAsync(customer => customer.Id.Equals(id),
 			false, cancellationToken);

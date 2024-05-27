@@ -28,6 +28,14 @@ public class ProductService : IProductService
 			product?.ToProductGetResponse();
 	}
 
+	public async Task<Photo?> GetPhotoAsync(int id, CancellationToken cancellationToken)
+	{
+		var product = await _productRepository.GetAsync(id, cancellationToken);
+
+		return
+			product?.Photo;
+	}
+
 	public async Task<IEnumerable<ProductGetResponse>> ListAsync(ProductType type, int? page, int? skip, CancellationToken cancellationToken)
 	{
 		var products = await _productRepository.ListAsync(type, page, skip, cancellationToken);

@@ -1,4 +1,5 @@
 using Domain.Entities.Enums;
+using Domain.ValueObjects;
 
 namespace Application.Dtos.ProductResponse;
 

@@ -15,19 +15,17 @@ namespace Infrastructure.EntityConfigurations
 				.IsRequired();
 
 			builder.Property(c => c.Description)
-				.HasColumnType("varchar(200)")
+				.HasColumnType("varchar(MAX)")
 				.IsRequired();
 
 			builder.Property(c => c.ProductType)
 				.HasConversion<string>();
 
 			builder.Property(c => c.PhotoFilename)
-				.HasColumnType("varchar(200)")
-				.IsRequired();
+				.HasColumnType("varchar(200)");
 
 			builder.Property(c => c.PhotoContentType)
-				.HasColumnType("varchar(50)")
-				.IsRequired();
+				.HasColumnType("varchar(50)");
 		}
 	}
 }
