@@ -37,7 +37,7 @@ Antes de começar, você vai precisar ter instalado em sua máquina as seguintes
 ```bash
 git clone https://github.com/rudironsonijr/fiap-pos-software-architecture-tech-challenge-turma-7-grupo-48.git
 
-cd lanchonete-api
+cd fiap-pos-software-architecture-tech-challenge-turma-7-grupo-48
 ```
 
 ### Execute através do Docker Compose
@@ -48,6 +48,8 @@ docker compose up -d
 
 Após subir os containers, a API estará disponível em http://localhost:5000. 
 A partir desse momento, você poderá acessar a interface do Swagger em http://localhost:5000/swagger.
+
+[Swagger](.swagger.png)
 
 ## Documentação do Event Storm e Swagger
 - [Link para acesso do Event Storm](https://miro.com/welcomeonboard/VDJKZ2pRT0wzZWYwRDhKdWZjSGc0emxZOVVDMmFSTHg4VERsVTA3S2pRZTdZSlJ5ZVVjMXFlOGpvZVJtNGZTVnwzNDU4NzY0NTg1NTg2OTYzNjIxfDI=?share_link_id=452022055535)
