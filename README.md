@@ -5,7 +5,7 @@
 Bem-vindo a API da Lanchonete! 
 
 A API foi desenvolvida em .NET 8 e sua persistência esta sendo feita em um banco de dados SQL Servet. 
-Toda a execução da aplicação e sua infraestrutura pode ser feita através de containers Docker. Você encontrará um arquivo chamado ``docker-compose.yml`` na raiz do repositório com a declaracão dos serviços necessários para a execução da aplicação e suas dependências. 
+Toda a execução da aplicação e sua infraestrutura pode ser feita através de containers Docker. Você encontrará um arquivo chamado ``docker-compose.yaml`` na raiz do repositório com a declaracão dos serviços necessários para a execução da aplicação e suas dependências. 
 A aplicação fornece uma interface para utilizacao das APIs através do componente Swagger UI.
 
 ### Tecnologias Utilizadas
