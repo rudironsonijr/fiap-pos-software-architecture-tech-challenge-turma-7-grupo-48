@@ -1,30 +1,34 @@
-# Lanchonete API (Turma 7 - Grupo 48)
+# MBA em Software Architecture @ FIAP
 
-Bem-vindo à API da Lanchonete! A API foi desenvolvida em .NET Core 8, utiliza Docker Compose para containerização e SQL Server como banco de dados. A documentação da API está disponível no Swagger.
+## Turma 7 - Grupo 48: Lanchonete API
 
-## Tecnologias Utilizadas
+Bem-vindo a API da Lanchonete! 
 
-- .NET Core 8
-- Docker
+A API foi desenvolvida em .NET 8 e sua persistência esta sendo feita em um banco de dados SQL Servet. 
+Toda a execução da aplicação e sua infraestrutura pode ser feita através de containers Docker. Você encontrará um arquivo chamado ``docker-compose.yml`` na raiz do repositório com a declaracão dos serviços necessários para a execução da aplicação e suas dependências. 
+A aplicação fornece uma interface para utilizacao das APIs através do componente Swagger UI.
+
+### Tecnologias Utilizadas
+
+- .NET 8
 - SQL Server
+- Docker
 - Swagger
 
 ## Funcionalidades
 
-- Criar, editar e Produtos
-- Buscar Produtos por Categoria
-- Cadastro do Cliente
-- Identificação do Cliente via CPF
+- Criar, editar remover produtos
+- Buscar produtos por categoria(s)
+- Cadastro de clientes
+- Identificação de cliente via CPF
 - Fake checkout, apenas enviar os produtos escolhidos para a fila. O checkout é a finalização do pedido.
-- Listar Pedidos.
+- Listar pedidos.
 
 ## Pré-requisitos
 
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
 
 - [Docker](https://www.docker.com/get-started)
-- [Visual Studio](https://visualstudio.microsoft.com/pt-br/vs/community/)
-- [SQL Server](https://learn.microsoft.com/pt-br/sql/ssms/download-sql-server-management-studio-ssms?view=sql-server-ver16)
 
 ## Como Rodar a Aplicação
 
@@ -32,8 +36,19 @@ Antes de começar, você vai precisar ter instalado em sua máquina as seguintes
 
 ```bash
 git clone https://github.com/rudironsonijr/fiap-pos-software-architecture-tech-challenge-turma-7-grupo-48.git
+
 cd lanchonete-api
 ```
+
+### Execute através do Docker Compose
+
+```bash
+docker compose up -d
+```
+
+Após subir os containers, a API estará disponível em http://localhost:5000. 
+A partir desse momento, você poderá acessar a interface do Swagger em http://localhost:5000/swagger.
+
 ## Documentação do Event Storm e Swagger
 - [Link para acesso do Event Storm](https://miro.com/welcomeonboard/VDJKZ2pRT0wzZWYwRDhKdWZjSGc0emxZOVVDMmFSTHg4VERsVTA3S2pRZTdZSlJ5ZVVjMXFlOGpvZVJtNGZTVnwzNDU4NzY0NTg1NTg2OTYzNjIxfDI=?share_link_id=452022055535)
-- Após subir os containers, a API estará disponível em http://localhost:5000. Você pode acessar a documentação do Swagger em http://localhost:5000/swagger.
+
