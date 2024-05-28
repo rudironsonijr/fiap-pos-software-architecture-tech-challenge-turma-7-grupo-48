@@ -5,7 +5,7 @@
 Bem-vindo a API da Lanchonete! 
 
 A API foi desenvolvida em .NET 8 e sua persistência esta sendo feita em um banco de dados SQL Servet. 
-Toda a execução da aplicação e sua infraestrutura pode ser feita através de containers Docker. Você encontrará um arquivo chamado ``docker-compose.yml`` na raiz do repositório com a declaracão dos serviços necessários para a execução da aplicação e suas dependências. 
+Toda a execução da aplicação e sua infraestrutura pode ser feita através de containers Docker. Você encontrará um arquivo chamado ``docker-compose.yaml`` na raiz do repositório com a declaracão dos serviços necessários para a execução da aplicação e suas dependências. 
 A aplicação fornece uma interface para utilizacao das APIs através do componente Swagger UI.
 
 ### Tecnologias Utilizadas
@@ -52,5 +52,5 @@ A partir desse momento, você poderá acessar a interface do Swagger em http://l
 ![Swagger](swagger.png)
 
 ## Documentação do Event Storm e Swagger
-- [Link para acesso do Event Storm](https://miro.com/welcomeonboard/VDJKZ2pRT0wzZWYwRDhKdWZjSGc0emxZOVVDMmFSTHg4VERsVTA3S2pRZTdZSlJ5ZVVjMXFlOGpvZVJtNGZTVnwzNDU4NzY0NTg1NTg2OTYzNjIxfDI=?share_link_id=452022055535)
+- [Link para acesso do Event Storm](https://miro.com/app/board/uXjVKU1AvvI=/?share_link_id=847516420738)
 
