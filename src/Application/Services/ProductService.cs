@@ -1,11 +1,10 @@
-using Application.Dtos.CustomerRequest;
-using Application.Dtos.OrderRequest;
 using Application.Dtos.ProductRequest;
 using Application.Dtos.ProductRequest.Extensions;
 using Application.Dtos.ProductResponse;
+using Application.Extensions.ProductAggregate;
 using Application.Services.Interfaces;
 using Core.Notifications;
-using Domain.Entities.OrderAggregate;
+using Domain.Entities.Enums;
 using Domain.Repositories;
 using Domain.ValueObjects;
 
@@ -21,21 +20,48 @@ public class ProductService : IProductService
 		_notificationContext = notificationContext;
 	}
 
+	public async Task<ProductGetResponse?> GetAsync(int id, CancellationToken cancellationToken)
+	{
+		var product = await _productRepository.GetAsync(id, cancellationToken);
+
+		return
+			product?.ToProductGetResponse();
+	}
+
+	public async Task<Photo?> GetPhotoAsync(int id, CancellationToken cancellationToken)
+	{
+		var product = await _productRepository.GetAsync(id, cancellationToken);
+
+		return
+			product?.Photo;
+	}
+
+	public async Task<IEnumerable<ProductGetResponse>> ListAsync(ProductType type, int? page, int? skip, CancellationToken cancellationToken)
+	{
+		var products = await _productRepository.ListAsync(type, page, skip, cancellationToken);
+
+		return
+			products.Select(x => x.ToProductGetResponse());
+	}
+
 	public async Task<ProductCreateResponse?> CreateAsync(ProductCreateRequest productCreateRequest,
-	CancellationToken cancellationToken)
+		CancellationToken cancellationToken)
 	{
 
-		_notificationContext.AssertArgumentNotNullOrWhiteSpace(productCreateRequest.Name, $"The field name is required");
-		_notificationContext.AssertArgumentNotNullOrWhiteSpace(productCreateRequest.Description, $"The field Description is required");
-		_notificationContext.AssertArgumentMinimumLength(productCreateRequest.Price, 0, "The product price can't be 0");
+		_notificationContext
+			.AssertArgumentNotNullOrWhiteSpace(productCreateRequest.Name, $"The field name is required")
+			.AssertArgumentNotNullOrWhiteSpace(productCreateRequest.Description, $"The field Description is required")
+			.AssertArgumentIsMinimumLengthOrLess(productCreateRequest.Price, 0, "The product price can't be 0");
 
-		if(_notificationContext.HasErrors)
+		if (_notificationContext.HasErrors)
 		{
 			return null;
 		}
 
 		var product = productCreateRequest.ToProduct();
+
 		var productId = await _productRepository.CreateAsync(product, cancellationToken);
+
 		ProductCreateResponse response = new()
 		{
 			Id = productId
@@ -43,15 +69,25 @@ public class ProductService : IProductService
 		return response;
 	}
 
-	public async Task UpdatePriceAsync(ProductUpdatePriceRequest productUpdatePrice, CancellationToken cancellationToken)
+	public async Task UpdatePriceAsync(int id, ProductUpdatePriceRequest productUpdatePrice, CancellationToken cancellationToken)
 	{
-		//ToDo: Implementar validações
-		var product = await _productRepository.GetAsync(productUpdatePrice.Id, cancellationToken);
-		product.Price = productUpdatePrice.Price;
+		var product = await _productRepository.GetAsync(id, cancellationToken);
+
+		_notificationContext
+			.AssertArgumentNotNull(product, $"Product with id:{id} not found")
+			.AssertArgumentIsMinimumLengthOrLess(productUpdatePrice.Price, 0, "The product price can't be 0");
+
+		if (_notificationContext.HasErrors)
+		{
+			return;
+		}
+
+		product!.Price = productUpdatePrice.Price;
+
 		await _productRepository.UpdateAsync(product, cancellationToken);
 	}
 
-	public async Task AddPhoto(int id, Photo photo, CancellationToken cancellationToken)
+	public async Task UpdatePhoto(int id, Photo photo, CancellationToken cancellationToken)
 	{
 		var product = await _productRepository.GetAsync(id, cancellationToken);
 
@@ -62,7 +98,7 @@ public class ProductService : IProductService
 			return;
 		}
 
-		product.AddPhoto(photo);
+		product!.Photo = photo;
 
 		await _productRepository.UpdateAsync(product, cancellationToken);
 	}

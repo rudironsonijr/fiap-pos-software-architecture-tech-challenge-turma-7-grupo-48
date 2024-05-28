@@ -8,14 +8,15 @@ public class OrderProduct
 	public OrderProduct(Product product)
 	{
 		Product = product;
-		Id = product.Id;
+		ProductId = product.Id;
 	}
 	private readonly decimal _productPrice;
 
 	private int _quantity;
-	public int Id { get; private init; }
+	public int Id { get; init; }
 	public int ProductId { get; init; }
 	public Product Product { get; init; }
+	public int OrderId { get;init; }
 
 	public required decimal ProductPrice
 	{

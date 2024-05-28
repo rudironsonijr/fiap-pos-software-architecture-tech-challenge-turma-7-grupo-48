@@ -13,48 +13,63 @@ public class NotificationContext
 		_errors = new List<string>();
 	}
 
-	public void AddNotification(string message)
+	public NotificationContext AddNotification(string message)
 	{
 		_errors.Add(message);
+		return this;
 	}
 
-	public void AssertArgumentMinimumLength(decimal value, int minimum, string message)
+	public NotificationContext AssertArgumentIsMinimumLengthOrLess(decimal value, int minimum, string message)
 	{
-		if (value < minimum)
+		if (value <= minimum)
 		{
 			AddNotification(message);
 		}
+		return this;
 	}
 
-	public void AssertArgumentNotNull(object? object1, string message)
+	public NotificationContext AssertArgumentNotNull(object? object1, string message)
 	{
 		if (object1 == null)
 		{
 			AddNotification(message);
 		}
+		return this;
 	}
 
-	public void AssertArgumentInvalidCpf(string cpf)
+	public NotificationContext AssertArgumentInvalidCpf(string cpf)
 	{
 		if (cpf == null || !Cpf.IsValidCpf(cpf))
 		{
 			AddNotification($"The CPF: {cpf} is invalid");
 		}
+		return this;
 	}
 
-	public void AssertArgumentInvalidEmail(string email)
+	public NotificationContext AssertArgumentInvalidEmail(string email)
 	{
 		if (email == null || !Email.IsValidEmail(email))
 		{
 			AddNotification($"The E-Mail: {email} is invalid");
 		}
+		return this;
 	}
 
-	public void AssertArgumentNotNullOrWhiteSpace(string stringValue, string message)
+	public NotificationContext AssertArgumentNotNullOrWhiteSpace(string stringValue, string message)
 	{
 		if (string.IsNullOrWhiteSpace(stringValue))
 		{
 			AddNotification(message);
 		}
+		return this;
+	}
+
+	public NotificationContext AssertArgumentEnumInvalidValue(Enum value, Enum invalidValue, string message)
+	{
+		if (value == invalidValue)
+		{
+			AddNotification(message);
+		}
+		return this;
 	}
 }

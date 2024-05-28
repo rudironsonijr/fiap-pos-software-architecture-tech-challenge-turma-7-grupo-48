@@ -4,6 +4,7 @@ using Application.Extensions.OrderAggregate;
 using Application.Services.Interfaces;
 using Core.Notifications;
 using Domain.Entities.CustomerAggregate;
+using Domain.Entities.Enums;
 using Domain.Entities.OrderAggregate;
 using Domain.Repositories;
 
@@ -28,7 +29,7 @@ public class OrderService : IOrderService
 		_productRepository = productRepository;
 		_notificationContext = notificationContext;
 	}
-	public async Task<GetOrderResponse?> GetAsync(int id, CancellationToken cancellationToken)
+	public async Task<GetOrListOrderResponse?> GetAsync(int id, CancellationToken cancellationToken)
 	{
 		var order = await _orderRepository.GetAsync(id, cancellationToken);
 
@@ -36,22 +37,30 @@ public class OrderService : IOrderService
 			order?.ToGetOrderResponse();
 	}
 
-	public async Task<CreateOrderResponse?> CreateAsync(
-		CreateOrderRequest orderCreateRequest,
-		CancellationToken cancellationToken
-	)
+	public async Task<IEnumerable<GetOrListOrderResponse>> ListAsync(OrderStatus orderStatus, int? page, int? limit, CancellationToken cancellationToken)
+	{
+		var order = await _orderRepository.ListAsync(orderStatus, page, limit, cancellationToken);
+
+		return
+			order.Select(x => x.ToGetOrderResponse());
+	}
+
+	public async Task<CreateOrderResponse?> CreateAsync(CreateOrderRequest orderCreateRequest,
+		CancellationToken cancellationToken)
 	{
 		Customer? customer = null;
 		var product = await _productRepository.GetAsync(orderCreateRequest.Product.ProductId, cancellationToken);
 
 		if (orderCreateRequest.CustomerId != null)
 		{
-			customer = await _customerRepository.GetAsync(orderCreateRequest.CustomerId, cancellationToken);
+			customer = await _customerRepository.GetAsync(orderCreateRequest.CustomerId.Value, cancellationToken);
+
 			_notificationContext.AssertArgumentNotNull(customer, $"Customer with id: {orderCreateRequest.CustomerId} not found");
 		}
 
-		_notificationContext.AssertArgumentNotNull(product, $"Product with id:{orderCreateRequest.Product.ProductId} not found");
-		_notificationContext.AssertArgumentMinimumLength(orderCreateRequest.Product.Quantity, 1, "The minimun quantity is 1");
+		_notificationContext
+			.AssertArgumentNotNull(product, $"Product with id:{orderCreateRequest.Product.ProductId} not found")
+			.AssertArgumentIsMinimumLengthOrLess(orderCreateRequest.Product.Quantity, 0, "The minimun quantity is 1");
 
 		if (_notificationContext.HasErrors)
 		{
@@ -63,104 +72,81 @@ public class OrderService : IOrderService
 			CustomerId = customer?.Id,
 		};
 
-		order.AddProduct(product, orderCreateRequest.Product.Quantity);
+		order.AddProduct(product!, orderCreateRequest.Product.Quantity);
 
-		order = await _orderRepository.CreateAsync(order, cancellationToken);
+		var orderId = await _orderRepository.CreateAsync(order, cancellationToken);
 
-		CreateOrderResponse response = new()
+		return new()
 		{
-			OrderId = order.Id
+			OrderId = orderId
 		};
-		return response;
+		
 	}
 
-	public async Task<OrderUpdateOrderProductResponse?> AddProduct(
-		int orderId,
-		OrderAddProductRequest orderAddProductRequest,
-		CancellationToken cancellationToken
-	)
+	public async Task<OrderUpdateOrderProductResponse?> AddProduct(int orderId,
+		OrderAddProductRequest orderAddProductRequest, CancellationToken cancellationToken)
 	{
-		var orderTask = _orderRepository.GetAsync(orderId, cancellationToken);
-		var productTask = _productRepository.GetAsync(orderAddProductRequest.ProductId, cancellationToken);
+		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
+		var product = await _productRepository.GetAsync(orderAddProductRequest.ProductId, cancellationToken);
 
-		await Task.WhenAll(productTask, orderTask);
-
-		var order = orderTask.Result;
-		var product = productTask.Result;
-
-		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
-		_notificationContext.AssertArgumentNotNull(product, $"Product with id:{orderAddProductRequest.ProductId} not found");
-		_notificationContext.AssertArgumentMinimumLength(orderId, 1, "The minimun quantity is 1");
+		_notificationContext
+			.AssertArgumentNotNull(order, $"Order with id:{orderId} not found")
+			.AssertArgumentNotNull(product, $"Product with id:{orderAddProductRequest.ProductId} not found")
+			.AssertArgumentIsMinimumLengthOrLess(orderId, 0, "The minimun quantity is 1");
 
 		if (_notificationContext.HasErrors)
 		{
 			return null;
 		}
 
-		order.AddProduct(product, orderAddProductRequest.Quantity);
+		order!.AddProduct(product!, orderAddProductRequest.Quantity);
 
-		order = await _orderRepository.UpdateAsync(order, cancellationToken);
+		await _orderRepository.UpdateAsync(order, cancellationToken);
 
 		return
 			order.ToOrderUpdateProductResponse();
 	}
 
-	public async Task<OrderUpdateOrderProductResponse?> RemoveProduct(
-		int orderId,
-		int orderProductId,
-		CancellationToken cancellationToken
-	)
+	public async Task<OrderUpdateOrderProductResponse?> RemoveProduct(int orderId,
+		int productId, CancellationToken cancellationToken)
 	{
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
 		var orderProduct = order?.OrderProducts
-			.Where(p => p.Id == orderProductId)
+			.Where(p => p.ProductId == productId)
 			.FirstOrDefault();
 
-		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
-		_notificationContext.AssertArgumentNotNull(orderProduct, $"orderProduct with id:{orderId} not found");
+		_notificationContext
+			.AssertArgumentNotNull(order, $"Order with id:{orderId} not found")
+			.AssertArgumentNotNull(orderProduct, $"orderProduct with id:{orderId} not found");
 
 		if (_notificationContext.HasErrors)
 		{
 			return null;
 		}
 
-		order!.RemoveProduct(orderProductId);
+		order!.RemoveProduct(productId);
 
-		order = await _orderRepository.UpdateAsync(order, cancellationToken);
+		await _orderRepository.UpdateAsync(order, cancellationToken);
 
 		return
 			order.ToOrderUpdateProductResponse();
 	}
 
-	public async Task<OrderUpdateOrderProductResponse?> UpdateProductQuantity(
-		int orderId,
-		int orderProductId,
-		OrderUpdateProductQuantityRequest orderUpdateProductQuantityRequest,
-		CancellationToken cancellationToken
-	)
+	public async Task UpdateStatusToPreparing(int orderId, CancellationToken cancellationToken)
 	{
 
 		var order = await _orderRepository.GetAsync(orderId, cancellationToken);
-		var orderProduct = order?.OrderProducts
-			.Where(p => p.Id == orderProductId)
-			.FirstOrDefault();
 
 		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
-		_notificationContext.AssertArgumentNotNull(orderProduct, $"orderProduct with id:{orderId} not found");
 
 		if (_notificationContext.HasErrors)
 		{
-			return null;
+			return;
 		}
 
+		order!.ChangeStatusToPreparing();
 
-		order!.UpdateProductQuantity(orderProductId, orderUpdateProductQuantityRequest.Quantity);
-
-
-		order = await _orderRepository.UpdateAsync(order, cancellationToken);
-
-		return order
-			.ToOrderUpdateProductResponse();
+		await _orderRepository.UpdateAsync(order, cancellationToken);
 	}
 
 	public async Task UpdateStatusToDone(int orderId, CancellationToken cancellationToken)
@@ -208,7 +194,7 @@ public class OrderService : IOrderService
 			return;
 		}
 
-		order.ChangeStatusToCancelled();
+		order!.ChangeStatusToCancelled();
 
 		await _orderRepository.UpdateAsync(order, cancellationToken);
 	}

@@ -1,6 +1,6 @@
-namespace Application.Dtos.PaymentResponse
+namespace Application.Dtos.PaymentResponse;
+
+public record CreatePaymentResponse
 {
-	public class CreatePaymentResponse
-	{
-	}
+	public string PaymentId { get; init; } = string.Empty;
 }

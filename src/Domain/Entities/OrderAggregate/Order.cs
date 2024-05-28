@@ -10,15 +10,12 @@ public class Order : IAggregateRoot
 {
 	public Order() { }
 
-	public Order(
-		int id,
-		OrderStatus status,
-		List<OrderProduct> orderProducts
-	)
+	public Order(int id, OrderStatus status, List<OrderProduct> orderProducts, PaymentMethod? paymentMethod)
 	{
 		Id = id;
 		Status = status;
 		_orderProducts = orderProducts;
+		_paymentMethod = paymentMethod;
 	}
 
 	public int Id { get; init; }
@@ -37,7 +34,7 @@ public class Order : IAggregateRoot
 		get => _paymentMethod;
 		set
 		{
-			if(Status != OrderStatus.Creating)
+			if (Status != OrderStatus.Creating)
 			{
 				throw new SetPaymentMethodInvalidException();
 			}
@@ -55,36 +52,34 @@ public class Order : IAggregateRoot
 		}
 	}
 
-	public Order AddProduct(
-		Product product,
-		int quantity
-	)
+	public Order AddProduct(Product product, int quantity)
 	{
 		ValidateStatusToUpdateOrderProduct();
 
-		var item = _orderProducts.SingleOrDefault(x => x.Id == product.Id);
+		var item = _orderProducts.SingleOrDefault(x => x.ProductId == product.Id);
 
 		if (item != null)
 		{
-			item.Quantity += quantity;
+			item.Quantity = quantity;
 			return this;
 		}
 
 		OrderProduct orderProduct = new(product)
 		{
 			ProductPrice = product.Price,
-			Quantity = quantity
+			Quantity = quantity,
+			OrderId = Id,
 		};
 
 		_orderProducts.Add(orderProduct);
 		return this;
 	}
 
-	public Order RemoveProduct(int orderProductId)
+	public Order RemoveProduct(int productId)
 	{
 		ValidateStatusToUpdateOrderProduct();
 
-		var itemToRemove = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
+		var itemToRemove = _orderProducts.SingleOrDefault(x => x.ProductId == productId);
 
 		if (itemToRemove != null)
 			_orderProducts.Remove(itemToRemove);
@@ -92,10 +87,7 @@ public class Order : IAggregateRoot
 		return this;
 	}
 
-	public Order UpdateProductQuantity(
-		int orderProductId,
-		int quantity
-	)
+	public Order UpdateProductQuantity(int orderProductId, int quantity)
 	{
 		ValidateStatusToUpdateOrderProduct();
 
@@ -120,8 +112,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Creating,
-			OrderStatus.Received
-		);
+			OrderStatus.Received);
 
 		Status = OrderStatus.Received;
 		return this;
@@ -132,8 +123,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Received,
-			OrderStatus.Preparing
-		);
+			OrderStatus.Preparing);
 
 		Status = OrderStatus.Preparing;
 		return this;
@@ -144,8 +134,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Preparing,
-			OrderStatus.Done
-		);
+			OrderStatus.Done);
 
 		Status = OrderStatus.Done;
 		return this;
@@ -156,8 +145,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Done,
-			OrderStatus.Finished
-		);
+			OrderStatus.Finished);
 
 		Status = OrderStatus.Finished;
 		return this;
@@ -168,8 +156,7 @@ public class Order : IAggregateRoot
 		ChangeOrderStatusInvalidException.ThrowIfOrderStatusInvalidStepChange(
 			Status,
 			OrderStatus.Creating,
-			OrderStatus.Cancelled
-		);
+			OrderStatus.Cancelled);
 
 		Status = OrderStatus.Cancelled;
 		return this;

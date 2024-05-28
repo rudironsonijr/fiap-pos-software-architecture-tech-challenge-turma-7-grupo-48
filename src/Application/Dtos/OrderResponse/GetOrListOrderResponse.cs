@@ -2,7 +2,7 @@ using Domain.Entities.Enums;
 
 namespace Application.Dtos.OrderResponse;
 
-public record GetOrderResponse
+public record GetOrListOrderResponse
 {
 	public int Id { get; init; }
 	public OrderStatus Status { get; init; }

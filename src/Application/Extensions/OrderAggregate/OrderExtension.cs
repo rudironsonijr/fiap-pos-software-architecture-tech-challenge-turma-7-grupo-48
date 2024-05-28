@@ -25,7 +25,7 @@ internal static class OrderExtension
 
 	}
 
-	public static GetOrderResponse ToGetOrderResponse(this Order order)
+	public static GetOrListOrderResponse ToGetOrderResponse(this Order order)
 	{
 		List<GetOrderProductReponse> orderProductsResponse = [];
 
@@ -35,7 +35,7 @@ internal static class OrderExtension
 			orderProductsResponse.Add(getOrderProduct);
 		}
 
-		GetOrderResponse response = new()
+		GetOrListOrderResponse response = new()
 		{
 			Id = order.Id,
 			Price = order.Price,

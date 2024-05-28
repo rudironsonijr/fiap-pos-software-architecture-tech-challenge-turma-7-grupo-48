@@ -20,7 +20,10 @@ internal static class InfrastructureExtension
 	private static IServiceCollection AddSqlRepositories(this IServiceCollection services)
 	{
 		return services
-			.AddScoped<ICustomerSqlRepository, CustomerSqlRepository>();
+			.AddScoped<IOrderProductRepository, OrderProductRepository>()
+			.AddScoped<ICustomerSqlRepository, CustomerSqlRepository>()
+			.AddScoped<IOrderSqlRepository, OrderSqlRepository>()
+			.AddScoped<IProductSqlRepository, ProductSqlRepository>();
 	}
 
 	private static IServiceCollection AddAdapters(this IServiceCollection services)

@@ -1,8 +1,11 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Controllers.Exceptions;
+using WebApi.Factories;
 
 namespace WebApi.Middlewares;
 
@@ -33,7 +36,13 @@ public class ErrorMiddleware
 			_logger.LogWarning(exception, exception.Message);
 
 			var statusCodeResponse = HttpStatusCode.BadRequest;
-			var problemDetails = BuildProblemDetails(context.Request.Path, exception.Message, statusCodeResponse);
+			var problemDetails = ProblemDetailsFactory.BuildProblemDetails(context.Request.Path, exception.Message, statusCodeResponse);
+			await HandleResponseAsync(context, (int)statusCodeResponse, problemDetails);
+		}
+		catch (ControllerNotFoundException exception)
+		{
+			var statusCodeResponse = HttpStatusCode.NotFound;
+			var problemDetails = ProblemDetailsFactory.BuildProblemDetails(context.Request.Path, exception.Message, statusCodeResponse);
 			await HandleResponseAsync(context, (int)statusCodeResponse, problemDetails);
 		}
 		catch (Exception exception)
@@ -41,30 +50,15 @@ public class ErrorMiddleware
 			_logger.LogError(exception, exception.Message);
 
 			var statusCodeResponse = HttpStatusCode.BadRequest;
-			var problemDetails = BuildProblemDetails(context.Request.Path, exception.Message, statusCodeResponse);
+			var problemDetails = ProblemDetailsFactory.BuildProblemDetails(context.Request.Path, statusCodeResponse);
 			await HandleResponseAsync(context, (int)statusCodeResponse, problemDetails);
 		}
 	}
 
-	private static async Task HandleResponseAsync<T>(
-		HttpContext context,
-		int statusCodeResponse,
-		T response
-	)
+	private static async Task HandleResponseAsync<T>(HttpContext context, int statusCodeResponse, T response)
 	{
 		context.Response.StatusCode = statusCodeResponse;
 		await context.Response.WriteAsJsonAsync(response, _serializerOptions);
 	}
 
-	private static ProblemDetails BuildProblemDetails(
-		string instace,
-		string detail,
-		HttpStatusCode statusCode
-	)
-	{
-		return new ProblemDetails
-		{
-			Title = statusCode.ToString(), Instance = instace, Status = (int)statusCode, Type = "about:blank"
-		};
-	}
 }

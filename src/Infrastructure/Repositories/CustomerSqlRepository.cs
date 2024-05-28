@@ -1,7 +1,7 @@
 using Domain.Repositories.Base;
 using Infrastructure.Context;
 using Infrastructure.Repositories.Interfaces;
-using Infrastructure.SqlModels;
+using Infrastructure.SqlModels.CustomerAggregate;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -17,11 +17,17 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 	}
 
 	public async Task<CustomerSqlModel?> GetAsync(Expression<Func<CustomerSqlModel, bool>> expression,
-		CancellationToken cancellationToken)
+		bool asNoTracking, CancellationToken cancellationToken)
 	{
+		if (asNoTracking)
+		{
+			return await _context.Customer
+				.AsNoTracking()
+				.FirstOrDefaultAsync(expression, cancellationToken);	
+		}
+
 		return await _context.Customer
-			.AsNoTracking()
-			.SingleOrDefaultAsync(expression, cancellationToken);
+				.FirstOrDefaultAsync(expression, cancellationToken);
 	}
 
 	public Task<int> CountAsync(Expression<Func<CustomerSqlModel, bool>> expression,
@@ -37,5 +43,4 @@ public class CustomerSqlRepository : ICustomerSqlRepository
 			.Add(customer)
 			.Entity;
 	}
-
 }
