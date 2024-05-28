@@ -49,7 +49,7 @@ docker compose up -d
 Após subir os containers, a API estará disponível em http://localhost:5000. 
 A partir desse momento, você poderá acessar a interface do Swagger em http://localhost:5000/swagger.
 
-[Swagger](.swagger.png)
+[Swagger](swagger.png)
 
 ## Documentação do Event Storm e Swagger
 - [Link para acesso do Event Storm](https://miro.com/welcomeonboard/VDJKZ2pRT0wzZWYwRDhKdWZjSGc0emxZOVVDMmFSTHg4VERsVTA3S2pRZTdZSlJ5ZVVjMXFlOGpvZVJtNGZTVnwzNDU4NzY0NTg1NTg2OTYzNjIxfDI=?share_link_id=452022055535)
