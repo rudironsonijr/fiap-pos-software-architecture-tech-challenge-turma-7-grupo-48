@@ -10,6 +10,10 @@ internal class OrderProductSqlModelEntityConfiguration : IEntityTypeConfiguratio
 	{
 		builder.HasKey(x => x.Id);
 
+		builder
+			.Property(x => x.ProductPrice)
+			.HasColumnType("decimal(18,4)");
+
 		builder.HasOne(x => x.Product)
 			.WithMany(x => x.OrderProducts)
 			.HasForeignKey(x => x.ProductId);

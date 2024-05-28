@@ -19,6 +19,10 @@ internal class OrderSqlModelEntityConfiguration : IEntityTypeConfiguration<Order
 		builder.Property(c => c.PaymentKind)
 			.HasConversion<string>();
 
+		builder
+			.Property(x => x.Price)
+			.HasColumnType("decimal(18,4)");
+
 		builder.HasOne(x => x.Customer)
 			.WithMany(x => x.Orders)
 			.HasForeignKey(x => x.CustomerId)

@@ -1,11 +1,20 @@
-include:
-  - compose/docker-compose.database.yaml
 services:
-  app-snacks:
+  docker-fiap-diners-sqlserver:
+    container_name: docker-fiap-diners-sqlserver-container
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password1*
+    ports:
+      - "1433:1433"
+  diners-app:
     build: .
     environment:
-      SqlConnection: "Server=localhost,1433;Database=diners;Trusted_Connection=True;MultipleActiveResultSets=true"
+      - ASPNETCORE_ENVIRONMENT=Production
+      - DefaultConnection=Server=docker-fiap-diners-sqlserver,1433;Database=diners;User=sa;Password=Password1*;TrustServerCertificate=True
+    ports: 
+      - "5000:8080"
     depends_on:
-      - mssql-server
-    ports:
-      - "8081:8081"
+      - docker-fiap-diners-sqlserver
+
+

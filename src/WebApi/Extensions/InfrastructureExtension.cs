@@ -4,11 +4,18 @@ using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace WebApi.Extensions;
 
 internal static class InfrastructureExtension
 {
+	private static string ConnectionString;
+	
+	static InfrastructureExtension()
+	{
+		ConnectionString = GetConnectionString();
+	}
 	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 	{
 		return services
@@ -36,10 +43,37 @@ internal static class InfrastructureExtension
 
 	private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
 	{
+	
 		return
 			services
 				.AddScoped<DinersSqlContext>()
 				.AddDbContext<DinersSqlContext>(opts =>
-					opts.UseSqlServer(configuration.GetConnectionString("SqlConnection")));
+					opts.UseSqlServer(ConnectionString));
 	}
+
+	public static void MigrationInitialisation(this IApplicationBuilder app)
+	{
+		using (var serviceScope = app.ApplicationServices.CreateScope())
+		{
+			var db = serviceScope.ServiceProvider.GetRequiredService<DinersSqlContext>();
+
+			if (db.Database.GetPendingMigrations().Any())
+			{
+				db.Database.Migrate();
+			}
+		}
+	}
+
+	private static string GetConnectionString()
+	{
+		var connectionString = Environment.GetEnvironmentVariable("DefaultConnection");
+
+		if (!string.IsNullOrEmpty(connectionString))
+		{
+			return connectionString;
+		}
+
+		throw new Exception("Enviroment Variable DefaultConnection not found ");
+	}
+
 }

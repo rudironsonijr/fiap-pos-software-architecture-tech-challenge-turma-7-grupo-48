@@ -26,6 +26,10 @@ namespace Infrastructure.EntityConfigurations
 
 			builder.Property(c => c.PhotoContentType)
 				.HasColumnType("varchar(50)");
+
+			builder
+				.Property(x => x.Price)
+				.HasColumnType("decimal(18,4)");
 		}
 	}
 }
