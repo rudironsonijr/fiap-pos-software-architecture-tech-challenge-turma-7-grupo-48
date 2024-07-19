@@ -18,14 +18,13 @@ public class OrderRepositoryAdpater : IOrderRepository
 		_orderProductRepository = orderProductRepository;
 	}
 
-	public async Task<int> CreateAsync(Order order, CancellationToken cancellationToken)
+	public async Task<Order> CreateAsync(Order order, CancellationToken cancellationToken)
 	{
 		var orderSql = order.ToOrderSqlModel();
 
 		_orderSqlRepository.Add(orderSql);
 		await _orderSqlRepository.UnitOfWork.CommitAsync(cancellationToken);
-
-		return orderSql.Id;
+		return orderSql.ToOrder();
 
 	}
 

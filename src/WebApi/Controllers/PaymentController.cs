@@ -1,6 +1,6 @@
-using Application.Dtos.PaymentRequest;
-using Application.Dtos.PaymentResponse;
-using Application.Services.Interfaces;
+using UseCase.Dtos.PaymentRequest;
+using UseCase.Dtos.PaymentResponse;
+using UseCase.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -10,8 +10,8 @@ namespace WebApi.Controllers;
 public class PaymentController : ControllerBase
 {
 
-	private readonly IPaymentService _paymentService;
-	public PaymentController(IPaymentService paymentService)
+	private readonly IPaymentUseCase _paymentService;
+	public PaymentController(IPaymentUseCase paymentService)
 	{
 		_paymentService = paymentService;
 	}

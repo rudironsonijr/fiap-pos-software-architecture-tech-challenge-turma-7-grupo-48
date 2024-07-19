@@ -16,8 +16,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Application\Application.csproj" />
+		<ProjectReference Include="..\Controller\Controller.csproj" />
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\UseCase\UseCase.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

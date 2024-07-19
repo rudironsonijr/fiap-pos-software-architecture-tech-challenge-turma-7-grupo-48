@@ -6,7 +6,7 @@ namespace Domain.Repositories;
 
 public interface IOrderRepository : IRepository<Order>
 {
-	Task<int> CreateAsync(Order order, CancellationToken cancellationToken);
+	Task<Order> CreateAsync(Order order, CancellationToken cancellationToken);
 	Task UpdateAsync(Order order, CancellationToken cancellationToken);
 
 	Task<Order?> GetAsync(int id, CancellationToken cancellationToken);

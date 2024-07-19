@@ -1,16 +1,9 @@
-using Application.Dtos.CustomerRequest;
-using Application.Dtos.CustomerResponse;
-using Application.Dtos.OrderResponse;
-using Application.Dtos.ProductRequest;
-using Application.Dtos.ProductResponse;
-using Application.Services;
-using Application.Services.Interfaces;
+using Controller.Application.Interfaces;
+using Controller.Dtos.OrderResponse;
+using Controller.Dtos.ProductResponse;
 using Domain.Entities.Enums;
-using Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Net;
-using System.Net.Http.Headers;
+using UseCase.Dtos.ProductRequest;
 using WebApi.Controllers.Exceptions;
 using WebApi.DTOs;
 using WebApi.DTOs.Extensions;
@@ -22,11 +15,11 @@ namespace WebApi.Controllers
 	[ApiController]
 	public class ProductController : ControllerBase
 	{
-		private readonly IProductService _productService;
+		private readonly IProductApplication _productApplication;
 
-		public ProductController(IProductService productService)
+		public ProductController(IProductApplication productApplication)
 		{
-			_productService = productService;
+			_productApplication = productApplication;
 		}
 
 
@@ -37,7 +30,7 @@ namespace WebApi.Controllers
 		[Route("{id}")]
 		public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
 		{
-			var response = await _productService.GetAsync(id, cancellationToken);
+			var response = await _productApplication.GetAsync(id, cancellationToken);
 
 			if (response == null)
 			{
@@ -54,9 +47,9 @@ namespace WebApi.Controllers
 		[Route("{id}/Photo")]
 		public async Task<FileResult> DwonloadPhotoAsync(int id, CancellationToken cancellationToken)
 		{
-			var photo = await _productService.GetPhotoAsync(id, cancellationToken);
+			var photo = await _productApplication.GetPhotoAsync(id, cancellationToken);
 
-			if(photo == null)
+			if (photo == null)
 			{
 				throw new ControllerNotFoundException($"Photo for product Id: {id} not found");
 			}
@@ -71,7 +64,7 @@ namespace WebApi.Controllers
 		[Route("type/{productType}")]
 		public async Task<IActionResult> ListAsync(ProductType productType, int? page, int? limit, CancellationToken cancellationToken)
 		{
-			var response = await _productService.ListAsync(productType, page, limit, cancellationToken);
+			var response = await _productApplication.ListAsync(productType, page, limit, cancellationToken);
 
 			return Ok(response);
 		}
@@ -82,7 +75,7 @@ namespace WebApi.Controllers
 		public async Task<IActionResult> CreateAsync(ProductCreateWithFormFileRequest productCreateRequest, CancellationToken cancellationToken)
 		{
 			var request = await productCreateRequest.ToProductCreateRequestAsync(cancellationToken);
-			var response = await _productService.CreateAsync(request, cancellationToken);
+			var response = await _productApplication.CreateAsync(request, cancellationToken);
 
 			return Ok(response);
 		}
@@ -93,7 +86,7 @@ namespace WebApi.Controllers
 		[Route("{id}/price")]
 		public async Task<IActionResult> UpdatePriceAsync(int id, ProductUpdatePriceRequest productCreateRequest, CancellationToken cancellationToken)
 		{
-			await _productService.UpdatePriceAsync(id, productCreateRequest, cancellationToken);
+			await _productApplication.UpdatePriceAsync(id, productCreateRequest, cancellationToken);
 
 			return NoContent();
 		}
@@ -106,7 +99,7 @@ namespace WebApi.Controllers
 		{
 
 			var photo = await file.ToPhotoAsync(cancellationToken);
-			await _productService.UpdatePhoto(id, photo, cancellationToken);
+			await _productApplication.UpdatePhoto(id, photo, cancellationToken);
 			return NoContent();
 		}
 	}

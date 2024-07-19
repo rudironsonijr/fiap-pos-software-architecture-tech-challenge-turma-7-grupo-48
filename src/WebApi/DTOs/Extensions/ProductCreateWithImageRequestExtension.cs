@@ -1,4 +1,4 @@
-using Application.Dtos.ProductRequest;
+using UseCase.Dtos.ProductRequest;
 using Domain.ValueObjects;
 using WebApi.Extensions;
 

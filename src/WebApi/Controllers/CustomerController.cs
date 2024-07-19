@@ -1,19 +1,17 @@
-using Application.Dtos.CustomerRequest;
-using Application.Dtos.CustomerResponse;
-using Application.Dtos.OrderRequest;
-using Application.Dtos.OrderResponse;
-using Application.Services;
-using Application.Services.Interfaces;
+using Controller.Application;
+using Controller.Dtos.CustomerResponse;
 using Microsoft.AspNetCore.Mvc;
+using UseCase.Dtos.CustomerRequest;
 
 namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CustomerController : ControllerBase {
+public class CustomerController : ControllerBase
+{
 
-	private readonly ICustomerService _customerService;
-	public CustomerController(ICustomerService customerService)
+	private readonly CustomerApplication _customerService;
+	public CustomerController(CustomerApplication customerService)
 	{
 		_customerService = customerService;
 	}
@@ -27,7 +25,7 @@ public class CustomerController : ControllerBase {
 	{
 		var response = await _customerService.GetByCpf(cpf, cancellationToken);
 
-		if(response == null)
+		if (response == null)
 		{
 			return NotFound();
 		}
