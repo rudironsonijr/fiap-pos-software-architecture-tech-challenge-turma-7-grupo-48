@@ -17,6 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddUseCase();
 builder.Services.AddControllerLayerDI();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddIntegration();
 
 
 var app = builder.Build();

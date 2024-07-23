@@ -34,15 +34,15 @@ public class OrderApplication : IOrderApplication
 
 	public async Task<CreateOrderResponse?> CreateAsync(CreateOrderRequest orderCreateRequest, CancellationToken cancellationToken)
 	{
-		var orderId = await _orderUseCase.CreateAsync(orderCreateRequest, cancellationToken);
-		if (orderId == null)
+		var order = await _orderUseCase.CreateAsync(orderCreateRequest, cancellationToken);
+		if (order == null)
 		{
 			return null;
 		}
 
 		return new()
 		{
-			OrderId = orderId.Value
+			OrderId = order.Id
 		};
 	}
 

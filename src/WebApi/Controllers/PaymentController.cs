@@ -1,7 +1,7 @@
-using UseCase.Dtos.PaymentRequest;
-using UseCase.Dtos.PaymentResponse;
-using UseCase.Services.Interfaces;
+using Controller.Application.Interfaces;
+using Controller.Dtos.PaymentRequest;
 using Microsoft.AspNetCore.Mvc;
+using UseCase.Services.Interfaces;
 
 namespace WebApi.Controllers;
 
@@ -10,30 +10,20 @@ namespace WebApi.Controllers;
 public class PaymentController : ControllerBase
 {
 
-	private readonly IPaymentUseCase _paymentService;
-	public PaymentController(IPaymentUseCase paymentService)
+	private readonly IPaymentApplication _paymentApplication;
+	public PaymentController(IPaymentApplication paymentService)
 	{
-		_paymentService = paymentService;
+		_paymentApplication = paymentService;
 	}
 
-	[ProducesResponseType(typeof(CreatePaymentResponse),StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
+	[Route("pix")]
 	public async Task<IActionResult> CreateAsync(CreatePaymentRequest paymentRequest, CancellationToken cancellationToken)
 	{
-		var response = await _paymentService.CreateAsync(paymentRequest, cancellationToken);
+		var response = await _paymentApplication.CreatePixAsync(paymentRequest, cancellationToken);
 
 		return Ok(response);
-	}
-
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	[HttpPatch]
-	[Route("confirm/order/{orderId}")]
-	public async Task<IActionResult> ConfirmPaymentAsync(int orderId, CancellationToken cancellationToken)
-	{
-		await _paymentService.ConfirmPaymentAsync(orderId, cancellationToken);
-
-		return NoContent();
 	}
 }

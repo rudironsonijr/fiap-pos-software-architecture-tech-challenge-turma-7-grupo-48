@@ -21,7 +21,8 @@ public static class ControllerLayerExtension
 		return services
 			.AddScoped<ICustomerApplication, CustomerApplication>()
 			.AddScoped<IOrderApplication, OrderApplication>()
-			.AddScoped<IProductApplication, ProductApplication>();
+			.AddScoped<IProductApplication, ProductApplication>()
+			.AddScoped<IPaymentApplication, PaymentApplication>();
 
 	}
 }

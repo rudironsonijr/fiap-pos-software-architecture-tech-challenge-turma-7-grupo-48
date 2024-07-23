@@ -7,58 +7,50 @@ using Domain.Entities.OrderAggregate;
 using Domain.Repositories;
 using Domain.ValueObjects;
 using Helpers;
+using Domain.Gateways;
 
 namespace UseCase.Services;
 
 public class PaymentUseCase : IPaymentUseCase
 {
-	private readonly ICustomerRepository _customerRepository;
 	private readonly IOrderRepository _orderRepository;
-	private readonly IProductRepository _productRepository;
+	private readonly IPaymentGateway _paymentGateway;
 	private readonly NotificationContext _notificationContext;
 
 	public PaymentUseCase(
 		IOrderRepository orderRepository,
-		ICustomerRepository customerRepository,
-		IProductRepository productRepository,
+		IPaymentGateway paymentGateway,
 		NotificationContext notificationContext
 	)
 	{
 		_orderRepository = orderRepository;
-		_customerRepository = customerRepository;
-		_productRepository = productRepository;
+		_paymentGateway = paymentGateway;
 		_notificationContext = notificationContext;
 	}
 
-	public async Task<CreatePaymentResponse?> CreateAsync(CreatePaymentRequest createPayment, CancellationToken cancellationToken)
+	public async Task<string?> CreatePixAsync(int orderId, PaymentProvider provider, CancellationToken cancellationToken)
 	{
-		Order? orderResponse = await _orderRepository.GetAsync(createPayment.OrderId, cancellationToken);
+		Order? order = await _orderRepository.GetAsync(orderId, cancellationToken);
 
-		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{createPayment.OrderId} not found");
+		_notificationContext.AssertArgumentNotNull(order, $"Order with id:{orderId} not found");
 
-		_notificationContext.AssertArgumentEnumInvalidValue(createPayment.Provider, PaymentProvider.None, 
+		_notificationContext.AssertArgumentEnumInvalidValue(provider, PaymentProvider.None, 
 			$"Payment Method Can't be {PaymentProvider.None.GetEnumDescription()}");
-
-		_notificationContext.AssertArgumentEnumInvalidValue(createPayment.Kind, PaymentMethodKind.None,
-			$"Payment Kind Can't be {PaymentMethodKind.None.GetEnumDescription()}");
 
 		if (_notificationContext.HasErrors)
 		{
 			return null;
 		}
 
-		PaymentMethod paymentMethod = new(createPayment.Provider, createPayment.Kind);
+		PaymentMethod paymentMethod = new(provider, PaymentMethodKind.Pix);
 
-		orderResponse!.PaymentMethod = paymentMethod;
+		order!.PaymentMethod = paymentMethod;
 
-		await _orderRepository.UpdateAsync(orderResponse, cancellationToken);
+		var pix = await _paymentGateway.CreatePixPayment(order.Id, order.Price, provider);
 
-		CreatePaymentResponse response = new()
-		{
-			PaymentId = Guid.NewGuid().ToString(),
-		};
+		await _orderRepository.UpdateAsync(order, cancellationToken);
 		
-		return response;
+		return pix;
 	}
 
 	public async Task ConfirmPaymentAsync(int orderId, CancellationToken cancellationToken)
@@ -72,7 +64,6 @@ public class PaymentUseCase : IPaymentUseCase
 		{
 			return;
 		}
-
 
 		orderResponse!.ChangeStatusToReceived();
 

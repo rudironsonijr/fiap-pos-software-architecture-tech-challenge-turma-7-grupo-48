@@ -18,6 +18,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Controller\Controller.csproj" />
 		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\Integration\Integration.csproj" />
 		<ProjectReference Include="..\UseCase\UseCase.csproj" />
 	</ItemGroup>
 

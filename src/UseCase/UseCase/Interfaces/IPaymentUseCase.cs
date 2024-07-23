@@ -1,11 +1,10 @@
-using UseCase.Dtos.PaymentRequest;
-using UseCase.Dtos.PaymentResponse;
+using Domain.Entities.Enums;
 
 namespace UseCase.Services.Interfaces;
 
 public interface IPaymentUseCase
 {
-	Task<CreatePaymentResponse?> CreateAsync(CreatePaymentRequest createPayment, CancellationToken cancellationToken);
+	Task<string?> CreatePixAsync(int orderId, PaymentProvider provider, CancellationToken cancellationToken);
 
 	Task ConfirmPaymentAsync(int orderId, CancellationToken cancellationToken);
 }
