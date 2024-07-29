@@ -1,5 +1,4 @@
 using Domain.Entities.Enums;
-using Domain.Entities.OrderAggregate;
 using Domain.Entities.ProductAggregate;
 using Domain.Repositories;
 using Infrastructure.Exceptions;
@@ -36,13 +35,13 @@ public class ProductRepositoryAdapter : IProductRepository
 
 	}
 
-	public async Task<int> CreateAsync(Product product, CancellationToken cancellationToken)
+	public async Task<Product> CreateAsync(Product product, CancellationToken cancellationToken)
 	{
 		var productSqlModel = product.ToProductSqlModel();
 		_repository.Add(productSqlModel);
 		await _repository.UnitOfWork.CommitAsync(cancellationToken);
 
-		return productSqlModel.Id;
+		return productSqlModel.ToProduct();
 	}
 
 	public async Task UpdateAsync(Product product, CancellationToken cancellationToken)

@@ -3,6 +3,7 @@ using Infrastructure.EntityConfigurations;
 using Infrastructure.SqlModels;
 using Infrastructure.SqlModels.CustomerAggregate;
 using Infrastructure.SqlModels.OrderAggregate;
+using Infrastructure.SqlModels.PaymentAggregate;
 using Infrastructure.SqlModels.ProductAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -16,6 +17,7 @@ public class DinersSqlContext : DbContext, IUnitOfWork
 	internal DbSet<OrderSqlModel> Order { get; set; }
 	internal DbSet<OrderProductSqlModel> OrderProduct { get; set; }
 	internal DbSet<ProductSqlModel> Product { get; set; }
+	internal DbSet<PaymentSqlModel> Payment { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -23,6 +25,7 @@ public class DinersSqlContext : DbContext, IUnitOfWork
 		modelBuilder.ApplyConfiguration(new OrderSqlModelEntityConfiguration());
 		modelBuilder.ApplyConfiguration(new ProductSqlModelEntityConfiguration());
 		modelBuilder.ApplyConfiguration(new OrderProductSqlModelEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new PaymentSqlModelEntityConfiguration());
 
 		base.OnModelCreating(modelBuilder);
 	}

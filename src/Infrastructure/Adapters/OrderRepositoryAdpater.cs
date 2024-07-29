@@ -18,14 +18,13 @@ public class OrderRepositoryAdpater : IOrderRepository
 		_orderProductRepository = orderProductRepository;
 	}
 
-	public async Task<int> CreateAsync(Order order, CancellationToken cancellationToken)
+	public async Task<Order> CreateAsync(Order order, CancellationToken cancellationToken)
 	{
 		var orderSql = order.ToOrderSqlModel();
 
 		_orderSqlRepository.Add(orderSql);
 		await _orderSqlRepository.UnitOfWork.CommitAsync(cancellationToken);
-
-		return orderSql.Id;
+		return await GetAsync(orderSql.Id, cancellationToken) ?? throw new Exception("Order not Created");
 
 	}
 
@@ -40,6 +39,17 @@ public class OrderRepositoryAdpater : IOrderRepository
 		int? limit, CancellationToken cancellationToken)
 	{
 		var orderSql = await _orderSqlRepository.ListAsync(x => x.Status == orderStatus,
+			page, limit, cancellationToken);
+
+		var response = orderSql.Select(x => x.ToOrder());
+		return response;
+
+	}
+
+	public async Task<IEnumerable<Order>> ListAsync(IEnumerable<OrderStatus> orderStatus, int? page,
+		int? limit, CancellationToken cancellationToken)
+	{
+		var orderSql = await _orderSqlRepository.ListAsync(x => orderStatus.Contains(x.Status),
 			page, limit, cancellationToken);
 
 		var response = orderSql.Select(x => x.ToOrder());

@@ -10,7 +10,7 @@ public interface ICustomerRepository : IRepository<Customer>
 
 	Task<Customer?> GetAsync(int id, CancellationToken cancellationToken);
 
-	Task<int> CreateAsync(Customer id, CancellationToken cancellationToken);
+	Task<Customer> CreateAsync(Customer id, CancellationToken cancellationToken);
 
 	Task<bool> ExistsByCpf(Cpf cpf, CancellationToken cancellationToken);
 

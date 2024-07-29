@@ -10,12 +10,13 @@ public class Order : IAggregateRoot
 {
 	public Order() { }
 
-	public Order(int id, OrderStatus status, List<OrderProduct> orderProducts, PaymentMethod? paymentMethod)
+	public Order(int id, OrderStatus status, List<OrderProduct> orderProducts, PaymentMethod? paymentMethod, DateTime createdDate)
 	{
 		Id = id;
 		Status = status;
 		_orderProducts = orderProducts;
 		_paymentMethod = paymentMethod;
+		CreatedDate = createdDate;
 	}
 
 	public int Id { get; init; }
@@ -25,7 +26,8 @@ public class Order : IAggregateRoot
 	public OrderStatus Status { get; private set; } = OrderStatus.Creating;
 
 	private readonly List<OrderProduct> _orderProducts = [];
-	public IReadOnlyCollection<OrderProduct> OrderProducts => _orderProducts.AsReadOnly();
+	public IEnumerable<OrderProduct> OrderProducts => _orderProducts;
+	public DateTime? CreatedDate { get; init; }
 
 
 	private PaymentMethod? _paymentMethod;
@@ -34,11 +36,7 @@ public class Order : IAggregateRoot
 		get => _paymentMethod;
 		set
 		{
-			if (Status != OrderStatus.Creating)
-			{
-				throw new SetPaymentMethodInvalidException();
-			}
-
+			SetPaymentMethodInvalidException.ThrowInvalidStatus(Status);
 			_paymentMethod = value;
 		}
 	}
@@ -54,7 +52,7 @@ public class Order : IAggregateRoot
 
 	public Order AddProduct(Product product, int quantity)
 	{
-		ValidateStatusToUpdateOrderProduct();
+		ChangeOrderProductNotAbleException.ThrowInvalidStatus(Status);
 
 		var item = _orderProducts.SingleOrDefault(x => x.ProductId == product.Id);
 
@@ -77,24 +75,28 @@ public class Order : IAggregateRoot
 
 	public Order RemoveProduct(int productId)
 	{
-		ValidateStatusToUpdateOrderProduct();
+		ChangeOrderProductNotAbleException.ThrowInvalidStatus(Status);
 
 		var itemToRemove = _orderProducts.SingleOrDefault(x => x.ProductId == productId);
 
 		if (itemToRemove != null)
+		{
 			_orderProducts.Remove(itemToRemove);
+		}
 
 		return this;
 	}
 
 	public Order UpdateProductQuantity(int orderProductId, int quantity)
 	{
-		ValidateStatusToUpdateOrderProduct();
+		ChangeOrderProductNotAbleException.ThrowInvalidStatus(Status);
 
 		var itemToUpdate = _orderProducts.SingleOrDefault(x => x.Id == orderProductId);
 
 		if (itemToUpdate == null)
+		{
 			return this;
+		}
 
 		if (quantity == 0)
 		{
@@ -160,12 +162,5 @@ public class Order : IAggregateRoot
 
 		Status = OrderStatus.Cancelled;
 		return this;
-	}
-
-	private void ValidateStatusToUpdateOrderProduct()
-	{
-		if (Status == OrderStatus.Creating)
-			return;
-		throw new ChangeOrderProductNotAbleException();
 	}
 }

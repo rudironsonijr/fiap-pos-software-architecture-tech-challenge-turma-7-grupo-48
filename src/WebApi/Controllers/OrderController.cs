@@ -1,8 +1,8 @@
-using Application.Dtos.OrderRequest;
-using Application.Dtos.OrderResponse;
-using Application.Services.Interfaces;
+using Controller.Application.Interfaces;
+using Controller.Dtos.OrderResponse;
 using Domain.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
+using UseCase.Dtos.OrderRequest;
 
 namespace WebApi.Controllers;
 
@@ -10,11 +10,11 @@ namespace WebApi.Controllers;
 [ApiController]
 public class OrderController : ControllerBase
 {
-	private readonly IOrderService _orderService;
+	private readonly IOrderApplication _orderApplication;
 
-	public OrderController(IOrderService orderService)
+	public OrderController(IOrderApplication orderApplication)
 	{
-		_orderService = orderService;
+		_orderApplication = orderApplication;
 	}
 
 	[ProducesResponseType(typeof(GetOrListOrderResponse), StatusCodes.Status200OK)]
@@ -24,7 +24,7 @@ public class OrderController : ControllerBase
 	[Route("{id}")]
 	public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.GetAsync(id, cancellationToken);
+		var response = await _orderApplication.GetAsync(id, cancellationToken);
 
 		if (response == null)
 		{
@@ -41,7 +41,19 @@ public class OrderController : ControllerBase
 	[Route("status/{orderStatus}")]
 	public async Task<IActionResult> ListAsync(OrderStatus orderStatus, int? page, int? limit, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.ListAsync(orderStatus, page, limit, cancellationToken);
+		var response = await _orderApplication.ListAsync(orderStatus, page, limit, cancellationToken);
+
+		return Ok(response);
+	}
+
+	[ProducesResponseType(typeof(IEnumerable<GetOrListOrderResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[HttpGet]
+	[Route("Active")]
+	public async Task<IActionResult> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken)
+	{
+		var response = await _orderApplication.ListActiveAsync(page, limit, cancellationToken);
 
 		return Ok(response);
 	}
@@ -51,7 +63,7 @@ public class OrderController : ControllerBase
 	[HttpPost]
 	public async Task<IActionResult> Create(CreateOrderRequest orderCreateRequest, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.CreateAsync(orderCreateRequest, cancellationToken);
+		var response = await _orderApplication.CreateAsync(orderCreateRequest, cancellationToken);
 
 		return Ok(response);
 	}
@@ -65,7 +77,7 @@ public class OrderController : ControllerBase
 		OrderAddProductRequest orderAddProductRequest,
 		CancellationToken cancellationToken)
 	{
-		var response = await _orderService.AddProduct(id, orderAddProductRequest, cancellationToken);
+		var response = await _orderApplication.AddProduct(id, orderAddProductRequest, cancellationToken);
 
 		return Ok(response);
 	}
@@ -77,7 +89,7 @@ public class OrderController : ControllerBase
 	[Route("{id}/status/Preparing")]
 	public async Task<IActionResult> UpdateStatusToPreparing(int id, CancellationToken cancellationToken)
 	{
-		await _orderService.UpdateStatusToPreparing(id, cancellationToken);
+		await _orderApplication.UpdateStatusToPreparing(id, cancellationToken);
 
 		return NoContent();
 	}
@@ -88,7 +100,7 @@ public class OrderController : ControllerBase
 	[Route("{id}/status/done")]
 	public async Task<IActionResult> UpdateStatusToDone(int id, CancellationToken cancellationToken)
 	{
-		await _orderService.UpdateStatusToDone(id, cancellationToken);
+		await _orderApplication.UpdateStatusToDone(id, cancellationToken);
 
 		return NoContent();
 	}
@@ -100,7 +112,7 @@ public class OrderController : ControllerBase
 	[Route("{id}/status/finished")]
 	public async Task<IActionResult> UpdateStatusToFinished(int id, CancellationToken cancellationToken)
 	{
-		await _orderService.UpdateStatusToFinished(id, cancellationToken);
+		await _orderApplication.UpdateStatusToFinished(id, cancellationToken);
 
 		return NoContent();
 	}
@@ -111,7 +123,7 @@ public class OrderController : ControllerBase
 	[Route("{orderId}/product/{productId}")]
 	public async Task<IActionResult> RemoveProductAsync(int orderId, int productId, CancellationToken cancellationToken)
 	{
-		var response = await _orderService.RemoveProduct(orderId, productId, cancellationToken);
+		var response = await _orderApplication.RemoveProduct(orderId, productId, cancellationToken);
 		return Ok(response);
 	}
 
@@ -121,7 +133,7 @@ public class OrderController : ControllerBase
 	[Route("{orderId}")]
 	public async Task<IActionResult> CancelOrderAsync(int orderId, CancellationToken cancellationToken)
 	{
-		await _orderService.CancelOrder(orderId, cancellationToken);
+		await _orderApplication.CancelOrder(orderId, cancellationToken);
 
 		return NoContent();
 	}

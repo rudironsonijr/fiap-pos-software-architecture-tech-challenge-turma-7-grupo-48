@@ -15,7 +15,9 @@
 			"launchBrowser": true,
 			"launchUrl": "swagger",
 			"environmentVariables": {
-				"ASPNETCORE_ENVIRONMENT": "Development"
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"MercadoPagoAcessToken": "TEST-4885884137159783-072523-fa33e89752ebe5f27b98d16894582fdd-193275236",
+				"DefaultConnection": "Server=localhost,1433;Database=diners;User=sa;Password=Password1*;TrustServerCertificate=True"
 			},
 			"dotnetRunMessages": true,
 			"applicationUrl": "https://localhost:7036;http://localhost:5068"

@@ -4,20 +4,20 @@ using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace WebApi.Extensions;
 
 internal static class InfrastructureExtension
 {
 	private static string ConnectionString;
-	
+
 	static InfrastructureExtension()
 	{
 		ConnectionString = GetConnectionString();
 	}
 	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 	{
+
 		return services
 			.AddSqlRepositories()
 			.AddAdapters()
@@ -30,7 +30,8 @@ internal static class InfrastructureExtension
 			.AddScoped<IOrderProductRepository, OrderProductRepository>()
 			.AddScoped<ICustomerSqlRepository, CustomerSqlRepository>()
 			.AddScoped<IOrderSqlRepository, OrderSqlRepository>()
-			.AddScoped<IProductSqlRepository, ProductSqlRepository>();
+			.AddScoped<IProductSqlRepository, ProductSqlRepository>()
+			.AddScoped<IPaymentSqlModelRepository, PaymentSqlModelRepository>();
 	}
 
 	private static IServiceCollection AddAdapters(this IServiceCollection services)
@@ -38,12 +39,12 @@ internal static class InfrastructureExtension
 		return services
 			.AddScoped<ICustomerRepository, CustomerRepositoryAdapter>()
 			.AddScoped<IProductRepository, ProductRepositoryAdapter>()
-			.AddScoped<IOrderRepository, OrderRepositoryAdpater>();
+			.AddScoped<IOrderRepository, OrderRepositoryAdpater>()
+			.AddScoped<IPaymentRepository, PaymentRepositoryAdpater>();
 	}
 
 	private static IServiceCollection AddContext(this IServiceCollection services, IConfiguration configuration)
 	{
-	
 		return
 			services
 				.AddScoped<DinersSqlContext>()

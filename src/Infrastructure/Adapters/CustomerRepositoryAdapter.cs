@@ -32,12 +32,20 @@ public class CustomerRepositoryAdapter : ICustomerRepository
 		return customerSql?.ToCustomer();
 	}
 
-	public async Task<int> CreateAsync(Customer customer, CancellationToken cancellationToken)
+	public async Task<Customer> CreateAsync(Customer customer, CancellationToken cancellationToken)
 	{
 		var customerSql = customer.ToCustomerSqlModel();
 		_customerSqlRepository.Add(customerSql);
 		await _customerSqlRepository.UnitOfWork.CommitAsync(cancellationToken);
-		return customerSql.Id;
+
+		return new()
+		{
+			Id = customerSql.Id,
+			Name = customer.Name,
+			Email = customer.Email,
+			Cpf = customer.Cpf,
+		};
+		
 
 	}
 
