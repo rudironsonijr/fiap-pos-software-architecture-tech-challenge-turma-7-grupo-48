@@ -2,8 +2,6 @@ using Controller.Application.Interfaces;
 using Controller.Dtos.ProductResponse;
 using Controller.Extensions.ProductAggregate;
 using Domain.Entities.Enums;
-using Domain.Entities.ProductAggregate;
-using Domain.Repositories;
 using Domain.ValueObjects;
 using UseCase.Dtos.ProductRequest;
 using UseCase.Services.Interfaces;
@@ -46,13 +44,13 @@ public class ProductApplication : IProductApplication
 	{
 		var product = await _productUseCase.CreateAsync(productCreateRequest, cancellationToken);
 
-		return 
+		return
 			product?.ToProductCreateResponse();
 	}
 
 	public Task UpdatePriceAsync(int id, ProductUpdatePriceRequest productUpdatePrice, CancellationToken cancellationToken)
 	{
-		return 
+		return
 			_productUseCase.UpdatePriceAsync(id, productUpdatePrice, cancellationToken);
 	}
 

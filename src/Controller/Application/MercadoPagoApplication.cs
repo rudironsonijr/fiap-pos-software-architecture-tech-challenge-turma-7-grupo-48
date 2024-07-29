@@ -16,7 +16,7 @@ public class MercadoPagoApplication : IMercadoPagoApplication
 
 	public Task ProcessEvent(MercadoPagoEventRequest mercadoPagoEvent, CancellationToken cancellationToken)
 	{
-		if (mercadoPagoEvent.Action != UPDATE_ACTION_VAlUE)
+		if (mercadoPagoEvent.Action.Equals(UPDATE_ACTION_VAlUE) is false)
 		{
 			return Task.CompletedTask;
 		}

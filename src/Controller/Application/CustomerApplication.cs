@@ -1,4 +1,4 @@
-using Controller.Application.NewFolder;
+using Controller.Application.Interfaces;
 using Controller.Dtos.CustomerResponse;
 using Controller.Extensions.CustomerAggregate;
 using UseCase.Dtos.CustomerRequest;

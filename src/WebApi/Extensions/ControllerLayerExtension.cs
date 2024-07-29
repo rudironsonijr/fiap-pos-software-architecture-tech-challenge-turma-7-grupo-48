@@ -1,9 +1,6 @@
-using UseCase.Services.Interfaces;
-using UseCase.Services;
 using Controller.Application;
-using Controller.Application.NewFolder;
 using Controller.Application.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+using Controller.Application.Interfaces;
 using Integration.Controller.Interfaces;
 
 namespace WebApi.Extensions;

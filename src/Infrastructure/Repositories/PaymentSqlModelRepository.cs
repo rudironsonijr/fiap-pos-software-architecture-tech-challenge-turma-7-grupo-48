@@ -32,7 +32,7 @@ public class PaymentSqlModelRepository : IPaymentSqlModelRepository
 	}
 
 	public async Task<IEnumerable<PaymentSqlModel>> ListAsync(Expression<Func<PaymentSqlModel, bool>> expression,
-	int? page, int? limit, CancellationToken cancellationToken)
+		int? page, int? limit, CancellationToken cancellationToken)
 	{
 		var take = limit ?? int.MaxValue;
 

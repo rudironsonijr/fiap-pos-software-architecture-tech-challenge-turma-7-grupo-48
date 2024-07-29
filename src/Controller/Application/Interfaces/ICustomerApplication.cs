@@ -1,7 +1,7 @@
 using Controller.Dtos.CustomerResponse;
 using UseCase.Dtos.CustomerRequest;
 
-namespace Controller.Application.NewFolder;
+namespace Controller.Application.Interfaces;
 
 public interface ICustomerApplication
 {

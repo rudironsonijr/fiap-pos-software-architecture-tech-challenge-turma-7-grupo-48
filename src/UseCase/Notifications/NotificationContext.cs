@@ -72,4 +72,13 @@ public class NotificationContext
 		}
 		return this;
 	}
+
+	public NotificationContext AssertArgumentEnumNotEqual(Enum value, Enum invalidValue, string message)
+	{
+		if (value == invalidValue)
+		{
+			AddNotification(message);
+		}
+		return this;
+	}
 }

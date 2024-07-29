@@ -1,16 +1,15 @@
 using Controller.Application.Interfaces;
-using UseCase.Dtos.OrderRequest;
 using Controller.Dtos.OrderResponse;
 using Controller.Extensions.OrderAggregate;
 using Domain.Entities.Enums;
-using Domain.Repositories;
+using UseCase.Dtos.OrderRequest;
 using UseCase.Services.Interfaces;
 
 namespace Controller.Application;
 
 public class OrderApplication : IOrderApplication
 {
-	IOrderUseCase _orderUseCase;
+	private readonly IOrderUseCase _orderUseCase;
 	public OrderApplication(IOrderUseCase orderUseCase)
 	{
 		_orderUseCase = orderUseCase;

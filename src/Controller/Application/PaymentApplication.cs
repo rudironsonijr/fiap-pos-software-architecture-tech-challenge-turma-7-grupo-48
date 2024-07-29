@@ -1,6 +1,5 @@
 using Controller.Application.Interfaces;
 using Controller.Dtos.PaymentRequest;
-using Domain.Entities.Enums;
 using Domain.ValueObjects;
 using UseCase.Services.Interfaces;
 

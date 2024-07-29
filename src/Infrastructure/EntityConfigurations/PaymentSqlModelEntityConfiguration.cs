@@ -1,9 +1,10 @@
 using Infrastructure.SqlModels.PaymentAggregate;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.EntityConfigurations;
 
-internal class PaymentSqlModelEntityType
+internal class PaymentSqlModelEntityConfiguration : IEntityTypeConfiguration<PaymentSqlModel>
 {
 	public void Configure(EntityTypeBuilder<PaymentSqlModel> builder)
 	{

@@ -4,21 +4,20 @@ using Infrastructure.Context;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApi.Extensions;
 
 internal static class InfrastructureExtension
 {
 	private static string ConnectionString;
-	
+
 	static InfrastructureExtension()
 	{
 		ConnectionString = GetConnectionString();
 	}
 	public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 	{
+
 		return services
 			.AddSqlRepositories()
 			.AddAdapters()

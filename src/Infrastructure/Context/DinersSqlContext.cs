@@ -25,6 +25,7 @@ public class DinersSqlContext : DbContext, IUnitOfWork
 		modelBuilder.ApplyConfiguration(new OrderSqlModelEntityConfiguration());
 		modelBuilder.ApplyConfiguration(new ProductSqlModelEntityConfiguration());
 		modelBuilder.ApplyConfiguration(new OrderProductSqlModelEntityConfiguration());
+		modelBuilder.ApplyConfiguration(new PaymentSqlModelEntityConfiguration());
 
 		base.OnModelCreating(modelBuilder);
 	}

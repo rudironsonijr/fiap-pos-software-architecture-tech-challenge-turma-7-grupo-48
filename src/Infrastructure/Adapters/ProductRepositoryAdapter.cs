@@ -1,5 +1,4 @@
 using Domain.Entities.Enums;
-using Domain.Entities.OrderAggregate;
 using Domain.Entities.ProductAggregate;
 using Domain.Repositories;
 using Infrastructure.Exceptions;

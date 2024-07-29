@@ -1,4 +1,4 @@
-using Controller.Application;
+using Controller.Application.Interfaces;
 using Controller.Dtos.CustomerResponse;
 using Microsoft.AspNetCore.Mvc;
 using UseCase.Dtos.CustomerRequest;
@@ -10,8 +10,8 @@ namespace WebApi.Controllers;
 public class CustomerController : ControllerBase
 {
 
-	private readonly CustomerApplication _customerService;
-	public CustomerController(CustomerApplication customerService)
+	private readonly ICustomerApplication _customerService;
+	public CustomerController(ICustomerApplication customerService)
 	{
 		_customerService = customerService;
 	}

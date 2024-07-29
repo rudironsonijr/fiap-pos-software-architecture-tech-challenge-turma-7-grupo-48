@@ -28,7 +28,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-//app.MigrationInitialisation();
+app.MigrationInitialisation();
 
 app.UseHttpsRedirection();
 

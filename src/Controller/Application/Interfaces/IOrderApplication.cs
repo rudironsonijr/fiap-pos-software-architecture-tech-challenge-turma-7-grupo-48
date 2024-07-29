@@ -9,7 +9,7 @@ public interface IOrderApplication
 {
 	Task<GetOrListOrderResponse?> GetAsync(int id, CancellationToken cancellationToken);
 	Task<IEnumerable<GetOrListOrderResponse>> ListAsync(OrderStatus orderStatus, int? page, int? limit, CancellationToken cancellationToken);
-	Task<IEnumerable<Order>> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken);
+	Task<IEnumerable<GetOrListOrderResponse>> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken);
 	Task<CreateOrderResponse?> CreateAsync(CreateOrderRequest orderCreateRequest, CancellationToken cancellationToken);
 
 	Task<OrderUpdateOrderProductResponse?> AddProduct(int OrderId, OrderAddProductRequest orderAddProductRequest,

@@ -39,6 +39,8 @@ public class PaymentUseCase : IPaymentUseCase
 		_notificationContext.AssertArgumentEnumInvalidValue(provider, PaymentProvider.None,
 			$"Payment Method Can't be {PaymentProvider.None.GetEnumDescription()}");
 
+		ValidateOrderStatusToPayment(order);
+
 		if (_notificationContext.HasErrors)
 		{
 			return null;
@@ -67,13 +69,8 @@ public class PaymentUseCase : IPaymentUseCase
 			Status = createPixResponse.Status
 		};
 
-
-		var tasks = new List<Task> {
-			_orderRepository.UpdateAsync(order, cancellationToken),
-			_paymentRepository.CreateAsync(payment, cancellationToken),
-		};
-
-		await Task.WhenAll(tasks);
+		await _orderRepository.UpdateAsync(order, cancellationToken);
+		await _paymentRepository.CreateAsync(payment, cancellationToken);
 
 		return createPixResponse.QrCode;
 	}
@@ -81,7 +78,7 @@ public class PaymentUseCase : IPaymentUseCase
 	public async Task ConfirmPaymentAsync(string externalId, CancellationToken cancellationToken)
 	{
 
-		var payment = await _paymentRepository.GetAsync(externalId, cancellationToken);
+		var payment = await _paymentRepository.GetByExternalIdAsync(externalId, cancellationToken);
 
 		_notificationContext.AssertArgumentNotNull(payment, $"Payment with external id:{externalId} not found");
 		if (_notificationContext.HasErrors)
@@ -89,7 +86,7 @@ public class PaymentUseCase : IPaymentUseCase
 			return;
 		}
 
-		var orderId = payment.OrderId;
+		var orderId = payment!.OrderId;
 		Order? orderResponse = await _orderRepository.GetAsync(orderId, cancellationToken);
 
 		_notificationContext.AssertArgumentNotNull(orderResponse, $"Order with id:{orderId} not found");
@@ -104,12 +101,19 @@ public class PaymentUseCase : IPaymentUseCase
 		orderResponse!.ChangeStatusToReceived();
 		payment.Status = PaymentStatus.Paid;
 
-		var tasks = new List<Task> {
-			_orderRepository.UpdateAsync(orderResponse, cancellationToken),
-			_paymentRepository.UpdateAsync(payment, cancellationToken),
-		};
+		await _orderRepository.UpdateAsync(orderResponse, cancellationToken);
+		await _paymentRepository.UpdateAsync(payment, cancellationToken);
 
-		await Task.WhenAll(tasks);
+	}
 
+	private void ValidateOrderStatusToPayment(Order? order)
+	{
+		if (order == null)
+		{
+			return;
+		}
+
+		_notificationContext.AssertArgumentEnumInvalidValue(order.Status, OrderStatus.Creating,
+			$"Set Payment its only possible in status {OrderStatus.Creating.GetEnumDescription()}");
 	}
 }
