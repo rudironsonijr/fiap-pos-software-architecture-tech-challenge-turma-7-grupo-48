@@ -10,7 +10,7 @@ spec:
   gateways:
   - istio-system/public-gateway
   hosts:
-  - api-hubfundos-assinaturas-uat.rtm.net.br
+  - api-fiap.sa.com.br
   http:
   - corsPolicy:
       allowCredentials: true

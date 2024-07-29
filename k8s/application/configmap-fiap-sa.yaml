@@ -7,7 +7,5 @@ metadata:
   labels:
     app: fiap-sa
 data:
-  PORT: "4501"
-  ASPNETCORE_ENVIRONMENT: Development
-  STRING_CONNECTION: Server=mssql-service.mssql.svc.cluster.local;Database=HubFundosUAT;User Id=sa;Password=RtmSQ@LP@ssw0rd;TrustServerCertificate=True;
-  LOG_STRING_CONNECTION: Server=mssql-service.mssql.svc.cluster.local;Database=ApplicationLogsUAT;User Id=sa;Password=RtmSQ@LP@ssw0rd;TrustServerCertificate=True;  
+  MercadoPagoAcessToken: "TEST-4885884137159783-072523-fa33e89752ebe5f27b98d16894582fdd-193275236"
+  ASPNETCORE_ENVIRONMENT: "Development"
