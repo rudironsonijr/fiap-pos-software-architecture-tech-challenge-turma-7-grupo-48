@@ -4,6 +4,7 @@ using Controller.Application;
 using Controller.Application.NewFolder;
 using Controller.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Integration.Controller.Interfaces;
 
 namespace WebApi.Extensions;
 
@@ -22,7 +23,8 @@ public static class ControllerLayerExtension
 			.AddScoped<ICustomerApplication, CustomerApplication>()
 			.AddScoped<IOrderApplication, OrderApplication>()
 			.AddScoped<IProductApplication, ProductApplication>()
-			.AddScoped<IPaymentApplication, PaymentApplication>();
+			.AddScoped<IPaymentApplication, PaymentApplication>()
+			.AddScoped<IMercadoPagoApplication, MercadoPagoApplication>();
 
 	}
 }

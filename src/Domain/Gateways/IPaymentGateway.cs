@@ -1,9 +1,9 @@
-using Domain.Entities.Enums;
+using Domain.Entities.OrderAggregate;
+using Domain.Gateways.Dtos.PaymentGateway;
 
-namespace Domain.Gateways
+namespace Domain.Gateways;
+
+public interface IPaymentGateway
 {
-	public interface IPaymentGateway
-	{
-		Task<string> CreatePixPayment(int orderId, decimal price, PaymentProvider paymentProvider);
-	}
+	Task<CreatePixResponse> CreatePixPayment(Order order);
 }

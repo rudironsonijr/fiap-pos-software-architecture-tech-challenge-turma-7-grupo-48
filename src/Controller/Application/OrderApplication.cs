@@ -32,6 +32,14 @@ public class OrderApplication : IOrderApplication
 			order.Select(x => x.ToGetOrderResponse());
 	}
 
+	public async Task<IEnumerable<GetOrListOrderResponse>> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken)
+	{
+		var order = await _orderUseCase.ListActiveAsync(page, limit, cancellationToken);
+
+		return
+			order.Select(x => x.ToGetOrderResponse());
+	}
+
 	public async Task<CreateOrderResponse?> CreateAsync(CreateOrderRequest orderCreateRequest, CancellationToken cancellationToken)
 	{
 		var order = await _orderUseCase.CreateAsync(orderCreateRequest, cancellationToken);

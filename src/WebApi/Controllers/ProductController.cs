@@ -45,7 +45,7 @@ namespace WebApi.Controllers
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[HttpGet]
 		[Route("{id}/Photo")]
-		public async Task<FileResult> DwonloadPhotoAsync(int id, CancellationToken cancellationToken)
+		public async Task<FileResult> DownloadPhotoAsync(int id, CancellationToken cancellationToken)
 		{
 			var photo = await _productApplication.GetPhotoAsync(id, cancellationToken);
 

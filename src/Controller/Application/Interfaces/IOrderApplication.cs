@@ -1,6 +1,7 @@
 using UseCase.Dtos.OrderRequest;
 using Controller.Dtos.OrderResponse;
 using Domain.Entities.Enums;
+using Domain.Entities.OrderAggregate;
 
 namespace Controller.Application.Interfaces;
 
@@ -8,6 +9,7 @@ public interface IOrderApplication
 {
 	Task<GetOrListOrderResponse?> GetAsync(int id, CancellationToken cancellationToken);
 	Task<IEnumerable<GetOrListOrderResponse>> ListAsync(OrderStatus orderStatus, int? page, int? limit, CancellationToken cancellationToken);
+	Task<IEnumerable<Order>> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken);
 	Task<CreateOrderResponse?> CreateAsync(CreateOrderRequest orderCreateRequest, CancellationToken cancellationToken);
 
 	Task<OrderUpdateOrderProductResponse?> AddProduct(int OrderId, OrderAddProductRequest orderAddProductRequest,

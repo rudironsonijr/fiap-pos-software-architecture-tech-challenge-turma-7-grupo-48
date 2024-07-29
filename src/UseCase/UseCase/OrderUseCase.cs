@@ -39,6 +39,20 @@ public class OrderUseCase : IOrderUseCase
 			 _orderRepository.ListAsync(orderStatus, page, limit, cancellationToken);
 	}
 
+	public async Task<IEnumerable<Order>> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken)
+	{
+		var status = new List<OrderStatus>()
+		{
+			OrderStatus.Done,
+			OrderStatus.Preparing, 
+			OrderStatus.Received
+		};
+		var order = await _orderRepository.ListAsync(status, page, limit, cancellationToken);
+
+		order = order.OrderByDescending(x => x.Status).ThenBy(x => x.CreatedDate);
+		return order;
+			 
+	}
 	public async Task<Order?> CreateAsync(CreateOrderRequest orderCreateRequest,
 		CancellationToken cancellationToken)
 	{

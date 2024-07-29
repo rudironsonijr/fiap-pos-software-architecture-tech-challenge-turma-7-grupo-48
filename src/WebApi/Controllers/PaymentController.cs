@@ -1,7 +1,6 @@
 using Controller.Application.Interfaces;
 using Controller.Dtos.PaymentRequest;
 using Microsoft.AspNetCore.Mvc;
-using UseCase.Services.Interfaces;
 
 namespace WebApi.Controllers;
 
@@ -16,14 +15,14 @@ public class PaymentController : ControllerBase
 		_paymentApplication = paymentService;
 	}
 
-	[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+	[ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[HttpPost]
 	[Route("pix")]
-	public async Task<IActionResult> CreateAsync(CreatePaymentRequest paymentRequest, CancellationToken cancellationToken)
+	public async Task<IActionResult> CreatePixAsync(CreatePaymentRequest paymentRequest, CancellationToken cancellationToken)
 	{
 		var response = await _paymentApplication.CreatePixAsync(paymentRequest, cancellationToken);
 
-		return Ok(response);
+		return File(response?.Data!, response?.ContentType!);
 	}
 }

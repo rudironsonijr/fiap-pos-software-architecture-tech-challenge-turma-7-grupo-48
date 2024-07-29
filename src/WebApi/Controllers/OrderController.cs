@@ -1,9 +1,8 @@
-using UseCase.Dtos.OrderRequest;
+using Controller.Application.Interfaces;
 using Controller.Dtos.OrderResponse;
 using Domain.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
-using UseCase.Services.Interfaces;
-using Controller.Application.Interfaces;
+using UseCase.Dtos.OrderRequest;
 
 namespace WebApi.Controllers;
 
@@ -43,6 +42,18 @@ public class OrderController : ControllerBase
 	public async Task<IActionResult> ListAsync(OrderStatus orderStatus, int? page, int? limit, CancellationToken cancellationToken)
 	{
 		var response = await _orderApplication.ListAsync(orderStatus, page, limit, cancellationToken);
+
+		return Ok(response);
+	}
+
+	[ProducesResponseType(typeof(IEnumerable<GetOrListOrderResponse>), StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[HttpGet]
+	[Route("Active")]
+	public async Task<IActionResult> ListActiveAsync(int? page, int? limit, CancellationToken cancellationToken)
+	{
+		var response = await _orderApplication.ListActiveAsync(page, limit, cancellationToken);
 
 		return Ok(response);
 	}

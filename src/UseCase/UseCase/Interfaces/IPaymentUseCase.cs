@@ -1,10 +1,11 @@
 using Domain.Entities.Enums;
+using Domain.ValueObjects;
 
 namespace UseCase.Services.Interfaces;
 
 public interface IPaymentUseCase
 {
-	Task<string?> CreatePixAsync(int orderId, PaymentProvider provider, CancellationToken cancellationToken);
+	Task<Photo?> CreatePixAsync(int orderId, PaymentProvider provider, CancellationToken cancellationToken);
 
-	Task ConfirmPaymentAsync(int orderId, CancellationToken cancellationToken);
+	Task ConfirmPaymentAsync(string externalId, CancellationToken cancellationToken);
 }

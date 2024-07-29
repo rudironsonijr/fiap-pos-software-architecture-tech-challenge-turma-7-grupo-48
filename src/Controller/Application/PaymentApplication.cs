@@ -1,6 +1,7 @@
 using Controller.Application.Interfaces;
 using Controller.Dtos.PaymentRequest;
 using Domain.Entities.Enums;
+using Domain.ValueObjects;
 using UseCase.Services.Interfaces;
 
 namespace Controller.Application;
@@ -12,7 +13,7 @@ public class PaymentApplication : IPaymentApplication
 	{
 		_paymentUseCase = paymentUseCase;
 	}
-	public Task<string?> CreatePixAsync(CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
+	public Task<Photo?> CreatePixAsync(CreatePaymentRequest createPaymentRequest, CancellationToken cancellationToken)
 	{
 		return
 			 _paymentUseCase.CreatePixAsync(createPaymentRequest.OrderId, createPaymentRequest.paymentProvider, cancellationToken);

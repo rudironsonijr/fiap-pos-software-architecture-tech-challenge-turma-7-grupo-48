@@ -15,7 +15,7 @@ internal static class OrderSqlModelExtension
 			paymentMethod = new PaymentMethod(orderSqlModel.PaymentProvider.Value, orderSqlModel.PaymentKind.Value);
 		}
 
-		Order order = new(orderSqlModel.Id, orderSqlModel.Status, orderProducts, paymentMethod)
+		Order order = new(orderSqlModel.Id, orderSqlModel.Status, orderProducts, paymentMethod, orderSqlModel.CreatedAt)
 		{
 			CustomerId = orderSqlModel.CustomerId,
 		};

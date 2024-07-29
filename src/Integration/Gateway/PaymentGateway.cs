@@ -1,5 +1,6 @@
-using Domain.Entities.Enums;
+using Domain.Entities.OrderAggregate;
 using Domain.Gateways;
+using Domain.Gateways.Dtos.PaymentGateway;
 using Integration.Strategies.Pix.Interface;
 
 namespace Integration.Gateway;
@@ -10,9 +11,14 @@ public class PaymentGateway : IPaymentGateway
 	{
 		_pixStrategyResolver = pixStrategyResolver;
 	}
-	public Task<string> CreatePixPayment(int orderId, decimal price, PaymentProvider paymentProvider)
+	public Task<CreatePixResponse> CreatePixPayment(Order order)
 	{
+		if (order.PaymentMethod == null)
+		{
+			throw new ArgumentException("Order Payment Method Can't be null");
+		}
+
 		return
-			_pixStrategyResolver.Resolve(paymentProvider).CreatePayment(orderId, price);
+			_pixStrategyResolver.Resolve(order.PaymentMethod.Value.Provider).CreatePayment(order);
 	}
 }
