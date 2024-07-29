@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fiap-sa-uat
+  namespace: fiap-sa-deployment
+spec:
+  project: default
+  source:
+    repoURL: git@gitlab.com:rtmtecnologia/solutions/devops/rtm-global-manifests
+    targetRevision: HEAD
+    path: ./rtm.hub.fundos.assinaturas.api/manifests/uat/.
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: uat
+  syncPolicy:
+    retry:
+      limit: 3
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas
+  - group: '*'
+    kind: '*'
+    managedFieldsManagers:
+    - kube-controller-manager

@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fiap-sa
+  namespace: fiap-sa-api
+  labels:
+    app: fiap-sa
+  annotations:    
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fiap-sa
+  template:
+    metadata:
+      labels:
+        app: fiap-sa
+    spec:
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - fiap-sa
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: 533267350475.dkr.ecr.sa-east-1.amazonaws.com/fiap-sa-api:latest
+        name: fiap-sa
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+            ephemeral-storage: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+            ephemeral-storage: 256Mi
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /health
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /health
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        envFrom:
+        - configMapRef:
+            name: fiap-sa
+        - secretRef:
+            name: fiap-sa
+        volumeMounts:
+        - name: ephemeral
+          mountPath: /tmp
+      volumes:
+      - name: ephemeral
+        emptyDir: {}
+      imagePullSecrets:
+      - name: docker-registry

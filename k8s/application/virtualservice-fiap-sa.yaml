@@ -1,0 +1,38 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: fiap-sa
+  namespace: uat
+  labels:
+    app: fiap-sa
+spec:
+  gateways:
+  - istio-system/public-gateway
+  hosts:
+  - api-hubfundos-assinaturas-uat.rtm.net.br
+  http:
+  - corsPolicy:
+      allowCredentials: true
+      allowHeaders:
+      - X-Auth-Token
+      allowMethods:
+      - GET
+      - POST
+      - OPTIONS
+      - PUT
+      - PATCH
+      - DELETE
+      maxAge: 1m
+    match:
+    - uri:
+        prefix: /
+    retries:
+      attempts: 5
+      perTryTimeout: 30s
+      retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset,resource-exhausted,unavailable,cancelled
+    route:
+    - destination:
+        host: fiap-sa.fiap-sa-api.svc.cluster.local
+        port:
+          number: 8080

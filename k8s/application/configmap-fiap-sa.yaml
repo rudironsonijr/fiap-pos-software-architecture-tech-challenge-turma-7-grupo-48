@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fiap-sa
+  namespace: fiap-sa-api
+  labels:
+    app: fiap-sa
+data:
+  PORT: "4501"
+  ASPNETCORE_ENVIRONMENT: Development
+  STRING_CONNECTION: Server=mssql-service.mssql.svc.cluster.local;Database=HubFundosUAT;User Id=sa;Password=RtmSQ@LP@ssw0rd;TrustServerCertificate=True;
+  LOG_STRING_CONNECTION: Server=mssql-service.mssql.svc.cluster.local;Database=ApplicationLogsUAT;User Id=sa;Password=RtmSQ@LP@ssw0rd;TrustServerCertificate=True;  
