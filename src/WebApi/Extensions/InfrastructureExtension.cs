@@ -54,15 +54,25 @@ internal static class InfrastructureExtension
 
 	public static void MigrationInitialisation(this IApplicationBuilder app)
 	{
-		using (var serviceScope = app.ApplicationServices.CreateScope())
+		Console.WriteLine("Iniciando migration");
+		try
 		{
-			var db = serviceScope.ServiceProvider.GetRequiredService<DinersSqlContext>();
-
-			if (db.Database.GetPendingMigrations().Any())
+			using (var serviceScope = app.ApplicationServices.CreateScope())
 			{
-				db.Database.Migrate();
+				var db = serviceScope.ServiceProvider.GetRequiredService<DinersSqlContext>();
+
+				if (db.Database.GetPendingMigrations().Any())
+				{
+					db.Database.Migrate();
+				}
 			}
 		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.Message);
+		}
+
+		Console.WriteLine("Migration finalizada");
 	}
 
 	private static string GetConnectionString()
