@@ -17,17 +17,17 @@ spec:
     spec:
       terminationGracePeriodSeconds: 30
       securityContext:
-        fsGroupChangePolicy: OnRootMismatch
+         runAsUser: 0
       containers:
       - name: mssql
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: 533267350475.dkr.ecr.sa-east-1.amazonaws.com/mssql-fiap-sa-2022:latest
         resources:
           requests:
-            memory: "2G"
-            cpu: "2000m"
+            memory: "1G"
+            cpu: "500m"
           limits:
-            memory: "2G"
-            cpu: "2000m"
+            memory: "1G"
+            cpu: "500m"
         ports:
         - containerPort: 1433
         securityContext:
@@ -50,4 +50,4 @@ spec:
       volumes:
       - name: mssqldb
         persistentVolumeClaim:
-          claimName: mssql-data
+          claimName: mssql-data-2

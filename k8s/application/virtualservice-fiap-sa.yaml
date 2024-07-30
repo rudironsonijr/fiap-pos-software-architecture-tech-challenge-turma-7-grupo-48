@@ -1,38 +1,18 @@
 ---
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: fiap-sa
-  namespace: uat
-  labels:
-    app: fiap-sa
+  name: fiap-sa-ingress
+  namespace: fiap-sa-api
 spec:
-  gateways:
-  - istio-system/public-gateway
-  hosts:
-  - api-fiap.sa.com.br
-  http:
-  - corsPolicy:
-      allowCredentials: true
-      allowHeaders:
-      - X-Auth-Token
-      allowMethods:
-      - GET
-      - POST
-      - OPTIONS
-      - PUT
-      - PATCH
-      - DELETE
-      maxAge: 1m
-    match:
-    - uri:
-        prefix: /
-    retries:
-      attempts: 5
-      perTryTimeout: 30s
-      retryOn: 5xx,gateway-error,connect-failure,refused-stream,reset,resource-exhausted,unavailable,cancelled
-    route:
-    - destination:
-        host: fiap-sa.fiap-sa-api.svc.cluster.local
-        port:
-          number: 8080
+  rules:
+  - host: "c1ff04d40ee63d5678af8fac7cd08392.sk1.sa-east-1.eks.amazonaws.com"  
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fiap-sa
+            port:
+              number: 8080

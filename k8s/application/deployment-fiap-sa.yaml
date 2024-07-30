@@ -45,22 +45,6 @@ spec:
             ephemeral-storage: 256Mi
         ports:
         - containerPort: 8080
-        livenessProbe:
-          httpGet:
-            port: 8080
-            path: /health
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            port: 8080
-            path: /health
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
         envFrom:
         - configMapRef:
             name: fiap-sa
