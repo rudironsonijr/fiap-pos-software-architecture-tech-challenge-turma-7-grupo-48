@@ -57,3 +57,6 @@ A partir desse momento, você poderá acessar a interface do Swagger em http://l
 
 ## Desenho da Infraestrutura
 ![Desenho Infraestrutura](Desenho_Infraestrutura_FIAP_GRUPO_48_TURMA_7.drawio.png)
+
+## Link para o vídeo 
+https://youtu.be/iHuTgzF_PCA
