@@ -54,3 +54,6 @@ A partir desse momento, você poderá acessar a interface do Swagger em http://l
 ## Documentação do Event Storm e Swagger
 - [Link para acesso do Event Storm](https://miro.com/app/board/uXjVKU1AvvI=/?share_link_id=847516420738)
 
+
+## Desenho da Infraestrutura
+![Desenho Infraestrutura](Desenho_Infraestrutura_FIAP_GRUPO_48_TURMA_7.drawio.png)
