@@ -1,39 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mssql
+  name: mssql-deployment
   namespace: mssql-fiap-sa
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: mssql
-  strategy:
-    type: Recreate
+     matchLabels:
+       app: mssql
   template:
     metadata:
       labels:
         app: mssql
     spec:
       terminationGracePeriodSeconds: 30
+      hostname: mssqlinst
       securityContext:
-         runAsUser: 0
+        fsGroup: 10001
+        runAsUser: 0
       containers:
       - name: mssql
-        image: 533267350475.dkr.ecr.sa-east-1.amazonaws.com/mssql-fiap-sa-2022:latest
+        image: mcr.microsoft.com/mssql/server:2022-latest
         resources:
           requests:
-            memory: "1G"
+            memory: "2G"
             cpu: "500m"
           limits:
-            memory: "1G"
+            memory: "2G"
             cpu: "500m"
         ports:
         - containerPort: 1433
-        securityContext:
-          capabilities:
-            add:
-            - NET_BIND_SERVICE
         env:
         - name: MSSQL_PID
           value: "Developer"
@@ -42,8 +38,8 @@ spec:
         - name: MSSQL_SA_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mssql
-              key: MSSQL_SA_PASSWORD 
+              name: mssql-2
+              key: MSSQL_SA_PASSWORD
         volumeMounts:
         - name: mssqldb
           mountPath: /var/opt/mssql
